@@ -3,10 +3,12 @@ import { Header } from "@/components/Header";
 import { HeroSection } from "@/components/HeroSection";
 import { UserInputForm } from "@/components/UserInputForm";
 import { CropRecommendation } from "@/components/CropRecommendation";
-import { FarmerForum } from "@/components/FarmerForum";
+import { CropGuide } from "@/components/CropGuide";
+import { FarmerForumPost } from "@/components/FarmerForumPost";
 import { AIAssistance } from "@/components/AIAssistance";
 import { DiseaseDetector } from "@/components/DiseaseDetector";
 import { GovernmentSchemes } from "@/components/GovernmentSchemes";
+import { SchemeDetails } from "@/components/SchemeDetails";
 
 interface FormData {
   state: string;
@@ -21,6 +23,8 @@ const Index = () => {
   const [activeTab, setActiveTab] = useState("home");
   const [userFormData, setUserFormData] = useState<FormData | null>(null);
   const [showUserForm, setShowUserForm] = useState(false);
+  const [selectedCrop, setSelectedCrop] = useState<string | null>(null);
+  const [selectedScheme, setSelectedScheme] = useState<any | null>(null);
 
   const handleFormSubmit = (data: FormData) => {
     setUserFormData(data);
@@ -31,6 +35,22 @@ const Index = () => {
   const handleGetStarted = () => {
     setShowUserForm(true);
     setActiveTab("home");
+  };
+
+  const handleStartPlant = (cropName: string) => {
+    setSelectedCrop(cropName);
+  };
+
+  const handleBackToCrops = () => {
+    setSelectedCrop(null);
+  };
+
+  const handleSchemeDetails = (scheme: any) => {
+    setSelectedScheme(scheme);
+  };
+
+  const handleBackToSchemes = () => {
+    setSelectedScheme(null);
   };
 
   const renderContent = () => {
@@ -46,10 +66,13 @@ const Index = () => {
       case "crop-recommendation":
         return (
           <div className="container mx-auto px-4 py-8">
-            {userFormData ? (
+            {selectedCrop ? (
+              <CropGuide cropName={selectedCrop} onBack={handleBackToCrops} />
+            ) : userFormData ? (
               <CropRecommendation 
                 userLocation={`${userFormData.district}, ${userFormData.state}`}
                 userSeason={userFormData.season}
+                onStartPlant={handleStartPlant}
               />
             ) : (
               <div className="text-center py-8">
@@ -69,7 +92,7 @@ const Index = () => {
       case "farmer-forum":
         return (
           <div className="container mx-auto px-4 py-8">
-            <FarmerForum />
+            <FarmerForumPost />
           </div>
         );
       case "ai-assistance":
@@ -87,13 +110,29 @@ const Index = () => {
       case "government-schemes":
         return (
           <div className="container mx-auto px-4 py-8">
-            <GovernmentSchemes />
+            {selectedScheme ? (
+              <SchemeDetails scheme={selectedScheme} onBack={handleBackToSchemes} />
+            ) : (
+              <GovernmentSchemes />
+            )}
           </div>
         );
       default:
         return <HeroSection onGetStarted={handleGetStarted} />;
     }
   };
+
+  // Listen for scheme details event
+  useState(() => {
+    const handleSchemeDetailsEvent = (event: any) => {
+      handleSchemeDetails(event.detail);
+    };
+    
+    window.addEventListener('showSchemeDetails', handleSchemeDetailsEvent);
+    return () => {
+      window.removeEventListener('showSchemeDetails', handleSchemeDetailsEvent);
+    };
+  });
 
   return (
     <div className="min-h-screen bg-background">

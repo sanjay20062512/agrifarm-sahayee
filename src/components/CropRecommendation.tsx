@@ -24,9 +24,10 @@ interface CropData {
 interface CropRecommendationProps {
   userLocation: string;
   userSeason: string;
+  onStartPlant?: (cropName: string) => void;
 }
 
-export const CropRecommendation = ({ userLocation, userSeason }: CropRecommendationProps) => {
+export const CropRecommendation = ({ userLocation, userSeason, onStartPlant }: CropRecommendationProps) => {
   const mockCropData: CropData[] = [
     {
       id: "1",
@@ -173,6 +174,7 @@ export const CropRecommendation = ({ userLocation, userSeason }: CropRecommendat
                 variant="crop" 
                 size="sm" 
                 className="w-full"
+                onClick={() => onStartPlant?.(crop.name)}
               >
                 <Sprout className="w-4 h-4 mr-1" />
                 Start Plant

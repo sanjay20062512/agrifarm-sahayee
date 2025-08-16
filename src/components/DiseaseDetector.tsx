@@ -131,6 +131,13 @@ export const DiseaseDetector = () => {
               size="lg" 
               className="w-full"
               disabled={!selectedCrop || !uploadedImage}
+              onClick={() => {
+                // Trigger analysis - in real implementation this would call AI service
+                const analysisEvent = new CustomEvent('analyzeDisease', {
+                  detail: { crop: selectedCrop, image: uploadedImage }
+                });
+                window.dispatchEvent(analysisEvent);
+              }}
             >
               <Scan className="w-4 h-4 mr-2" />
               Analyze Disease

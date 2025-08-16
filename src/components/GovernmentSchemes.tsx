@@ -142,11 +142,38 @@ export const GovernmentSchemes = () => {
               </div>
 
               <div className="flex gap-2">
-                <Button variant="nav" size="sm" className="flex-1">
+                <Button 
+                  variant="nav" 
+                  size="sm" 
+                  className="flex-1"
+                  onClick={() => {
+                    // Redirect to official government website
+                    const officialUrls: Record<string, string> = {
+                      "PM-KISAN": "https://pmkisan.gov.in/",
+                      "Pradhan Mantri Fasal Bima Yojana": "https://pmfby.gov.in/",
+                      "KCC - Kisan Credit Card": "https://www.nabard.org/auth/writereaddata/tender/1608180417KCC%20Guidelines%202018-19.pdf",
+                      "PM Micro Irrigation Scheme": "https://pmksy.gov.in/",
+                      "National Agriculture Market (e-NAM)": "https://enam.gov.in/web/",
+                      "Soil Health Card Scheme": "https://soilhealth.dac.gov.in/"
+                    };
+                    const url = officialUrls[scheme.name] || "https://agricoop.nic.in/";
+                    window.open(url, '_blank');
+                  }}
+                >
                   Apply Now
                   <ExternalLink className="w-3 h-3 ml-1" />
                 </Button>
-                <Button variant="outline" size="sm">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => {
+                    // Show detailed scheme information
+                    const detailsEvent = new CustomEvent('showSchemeDetails', {
+                      detail: scheme
+                    });
+                    window.dispatchEvent(detailsEvent);
+                  }}
+                >
                   Details
                 </Button>
               </div>

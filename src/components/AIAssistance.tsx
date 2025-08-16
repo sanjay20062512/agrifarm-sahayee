@@ -22,6 +22,48 @@ export const AIAssistance = () => {
   ]);
   const [newMessage, setNewMessage] = useState("");
 
+  const getAIResponse = (question: string): string => {
+    const lowerQuestion = question.toLowerCase();
+    
+    if (lowerQuestion.includes('pest') || lowerQuestion.includes('insect')) {
+      return "For pest control, I recommend: 1) Identify the pest first - aphids, caterpillars, or beetles? 2) Use Neem oil (organic) spray in evening 3) For severe infestations: Imidacloprid or Chlorpyrifos 4) Always maintain field hygiene and crop rotation 5) Use yellow sticky traps for early detection. What specific pest are you dealing with?";
+    }
+    
+    if (lowerQuestion.includes('fertilizer') || lowerQuestion.includes('nutrient')) {
+      return "Fertilizer recommendations: 1) Get soil test first - NPK levels are crucial 2) For vegetative growth: Urea (Nitrogen) 3) For flowering: DAP (Phosphorus) 4) For fruit development: MOP (Potassium) 5) Organic options: FYM, vermicompost, green manure 6) Apply in split doses for better absorption. Which crop and growth stage are you asking about?";
+    }
+    
+    if (lowerQuestion.includes('disease') || lowerQuestion.includes('fungus')) {
+      return "Common plant diseases and treatment: 1) Fungal: Use Mancozeb or Copper oxychloride 2) Bacterial: Streptocyclin spray 3) Viral: Remove infected plants immediately 4) Prevention: Proper spacing, avoid overhead watering 5) Organic: Neem cake, Trichoderma 6) Always spray in evening hours. Can you describe the symptoms you're seeing?";
+    }
+    
+    if (lowerQuestion.includes('water') || lowerQuestion.includes('irrigation')) {
+      return "Smart irrigation practices: 1) Critical stages: Flowering and fruit setting need more water 2) Drip irrigation saves 30-50% water 3) Water early morning or evening 4) Check soil moisture 2-3 inches deep 5) Mulching reduces water loss 6) Avoid waterlogging - ensure drainage. What's your current irrigation method?";
+    }
+    
+    if (lowerQuestion.includes('market') || lowerQuestion.includes('price')) {
+      return "Market price guidance: 1) Check daily mandi rates on eNAM portal 2) Harvest timing affects prices significantly 3) Storage can help wait for better prices 4) Direct marketing to reduce middleman costs 5) Value addition increases profits 6) Contract farming ensures price stability. Which crop's market info do you need?";
+    }
+    
+    if (lowerQuestion.includes('seed') || lowerQuestion.includes('variety')) {
+      return "Seed selection tips: 1) Use certified seeds for better yield 2) Choose varieties suited for your climate 3) Hybrid varieties give higher yield but can't save seeds 4) Local varieties are climate-adapted 5) Seed treatment with fungicide prevents diseases 6) Store seeds in cool, dry place. What crop are you planning to grow?";
+    }
+    
+    if (lowerQuestion.includes('soil') || lowerQuestion.includes('ph')) {
+      return "Soil management advice: 1) Test soil pH - most crops prefer 6.0-7.5 2) Add lime for acidic soil, gypsum for alkaline 3) Increase organic matter with compost 4) Deep ploughing improves soil structure 5) Green manuring adds nitrogen naturally 6) Avoid continuous monocropping. Have you done a recent soil test?";
+    }
+    
+    if (lowerQuestion.includes('organic') || lowerQuestion.includes('natural')) {
+      return "Organic farming practices: 1) Compost and vermicompost for nutrients 2) Neem-based pesticides for pest control 3) Crop rotation prevents diseases 4) Beneficial insects as natural predators 5) Green manuring with legumes 6) Mulching conserves moisture 7) Takes 2-3 years for full transition. Which aspect interests you most?";
+    }
+    
+    if (lowerQuestion.includes('weather') || lowerQuestion.includes('rain')) {
+      return "Weather-based farming: 1) Monitor 7-day weather forecast regularly 2) Postpone spraying before rain 3) Provide drainage during heavy rains 4) Cover crops during hailstorm 5) Increase irrigation during dry spells 6) Harvest before predicted rains. IMD and private weather apps provide good forecasts.";
+    }
+    
+    return "I'm your AgriAI assistant with deep knowledge in Indian farming. I can provide specific advice on: Crop selection, Pest & disease management, Fertilizer recommendations, Irrigation scheduling, Market prices, Government schemes, Organic farming, Soil health, Weather-based decisions. Please ask about any specific farming challenge you're facing!";
+  };
+
   const handleSendMessage = () => {
     if (!newMessage.trim()) return;
 
@@ -35,7 +77,7 @@ export const AIAssistance = () => {
     const botResponse = {
       id: messages.length + 2,
       type: "bot" as const,
-      message: "Thank you for your question! In a full implementation, I would provide detailed, location-specific advice about your farming query. I can help with crop selection, disease identification, fertilizer recommendations, irrigation schedules, market prices, and government schemes.",
+      message: getAIResponse(newMessage),
       timestamp: new Date()
     };
 
@@ -44,11 +86,14 @@ export const AIAssistance = () => {
   };
 
   const quickQuestions = [
-    "What crops are best for monsoon season?",
     "How to control aphids organically?",
-    "When should I apply fertilizer?",
-    "Current market prices for wheat",
-    "Government subsidies available"
+    "Best fertilizer for vegetative growth?",
+    "Fungal disease treatment methods",
+    "Water management in drip irrigation",
+    "Market price trends for tomatoes",
+    "Organic pest control methods",
+    "Soil pH management techniques",
+    "Weather-based farming decisions"
   ];
 
   return (
