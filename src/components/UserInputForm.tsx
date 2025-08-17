@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { MapPin, Calendar, Layers, Ruler } from "lucide-react";
+import { useLanguage } from "./LanguageContext";
 
 interface UserInputFormProps {
   onFormSubmit: (data: FormData) => void;
@@ -20,6 +21,7 @@ interface FormData {
 }
 
 export const UserInputForm = ({ onFormSubmit }: UserInputFormProps) => {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState<FormData>({
     state: "",
     district: "",
@@ -42,7 +44,25 @@ export const UserInputForm = ({ onFormSubmit }: UserInputFormProps) => {
     "Clayey Soil", "Laterite Soil", "Mountain Soil", "Saline Soil"
   ];
 
-  const seasons = ["Kharif", "Rabi", "Zaid"];
+  const seasons = [
+    { value: "Kharif", label: t("season.kharif") },
+    { value: "Rabi", label: t("season.rabi") },
+    { value: "Zaid", label: t("season.zaid") }
+  ];
+
+  // State-based districts mapping
+  const stateDistricts: { [key: string]: string[] } = {
+    "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem", "Tirunelveli", "Vellore", "Thoothukudi", "Dindigul", "Thanjavur"],
+    "Karnataka": ["Bangalore", "Mysore", "Hubli", "Mangalore", "Belgaum", "Gulbarga", "Davangere", "Bellary", "Bijapur", "Shimoga"],
+    "Andhra Pradesh": ["Hyderabad", "Visakhapatnam", "Vijayawada", "Guntur", "Warangal", "Nellore", "Kurnool", "Rajahmundry", "Tirupati", "Kakinada"],
+    "Kerala": ["Thiruvananthapuram", "Kochi", "Kozhikode", "Thrissur", "Kollam", "Palakkad", "Alappuzha", "Malappuram", "Kannur", "Kasaragod"],
+    "Maharashtra": ["Mumbai", "Pune", "Nashik", "Aurangabad", "Solapur", "Nagpur", "Kolhapur", "Amravati", "Sangli", "Satara"],
+    "Punjab": ["Chandigarh", "Ludhiana", "Amritsar", "Jalandhar", "Patiala", "Bathinda", "Mohali", "Firozpur", "Hoshiarpur", "Gurdaspur"],
+    "Uttar Pradesh": ["Lucknow", "Kanpur", "Agra", "Varanasi", "Meerut", "Allahabad", "Bareilly", "Aligarh", "Moradabad", "Saharanpur"],
+    "West Bengal": ["Kolkata", "Howrah", "Durgapur", "Asansol", "Siliguri", "Bardhaman", "Malda", "Baharampur", "Habra", "Kharagpur"],
+    "Rajasthan": ["Jaipur", "Jodhpur", "Kota", "Bikaner", "Ajmer", "Udaipur", "Bhilwara", "Alwar", "Bharatpur", "Pali"],
+    "Gujarat": ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Bhavnagar", "Jamnagar", "Junagadh", "Gandhinagar", "Anand", "Navsari"]
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,10 +80,10 @@ export const UserInputForm = ({ onFormSubmit }: UserInputFormProps) => {
       <CardHeader className="text-center">
         <CardTitle className="text-2xl text-foreground flex items-center justify-center gap-2">
           <MapPin className="w-6 h-6 text-primary" />
-          Farm Details Required
+          {t("form.title")}
         </CardTitle>
         <CardDescription>
-          Please provide your farming details to get personalized crop recommendations
+          {t("form.description")}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -73,7 +93,7 @@ export const UserInputForm = ({ onFormSubmit }: UserInputFormProps) => {
             <div className="space-y-2">
               <Label htmlFor="state" className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-primary" />
-                State
+                {t("form.state")}
               </Label>
               <Select value={formData.state} onValueChange={(value) => updateFormData("state", value)}>
                 <SelectTrigger>
@@ -90,13 +110,19 @@ export const UserInputForm = ({ onFormSubmit }: UserInputFormProps) => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="district">District</Label>
-              <Input
-                id="district"
-                placeholder="Enter your district"
-                value={formData.district}
-                onChange={(e) => updateFormData("district", e.target.value)}
-              />
+              <Label htmlFor="district">{t("form.district")}</Label>
+              <Select value={formData.district} onValueChange={(value) => updateFormData("district", value)} disabled={!formData.state}>
+                <SelectTrigger>
+                  <SelectValue placeholder={formData.state ? "Select your district" : "Select state first"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {formData.state && stateDistricts[formData.state]?.map((district) => (
+                    <SelectItem key={district} value={district}>
+                      {district}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
@@ -104,7 +130,7 @@ export const UserInputForm = ({ onFormSubmit }: UserInputFormProps) => {
           <div className="space-y-2">
             <Label htmlFor="season" className="flex items-center gap-2">
               <Calendar className="w-4 h-4 text-primary" />
-              Cropping Season
+              {t("form.season")}
             </Label>
             <Select value={formData.season} onValueChange={(value) => updateFormData("season", value)}>
               <SelectTrigger>
@@ -112,8 +138,8 @@ export const UserInputForm = ({ onFormSubmit }: UserInputFormProps) => {
               </SelectTrigger>
               <SelectContent>
                 {seasons.map((season) => (
-                  <SelectItem key={season} value={season}>
-                    {season}
+                  <SelectItem key={season.value} value={season.value}>
+                    {season.label}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -124,7 +150,7 @@ export const UserInputForm = ({ onFormSubmit }: UserInputFormProps) => {
           <div className="space-y-2">
             <Label htmlFor="soilType" className="flex items-center gap-2">
               <Layers className="w-4 h-4 text-primary" />
-              Soil Type
+              {t("form.soil-type")}
             </Label>
             <Select value={formData.soilType} onValueChange={(value) => updateFormData("soilType", value)}>
               <SelectTrigger>
@@ -144,7 +170,7 @@ export const UserInputForm = ({ onFormSubmit }: UserInputFormProps) => {
           <div className="space-y-2">
             <Label className="flex items-center gap-2">
               <Ruler className="w-4 h-4 text-primary" />
-              Farm Size
+              {t("form.farm-size")}
             </Label>
             <div className="flex gap-2">
               <Input
@@ -175,7 +201,7 @@ export const UserInputForm = ({ onFormSubmit }: UserInputFormProps) => {
             className="w-full"
             disabled={!formData.state || !formData.district || !formData.season || !formData.soilType || !formData.farmSize}
           >
-            Get Crop Recommendations
+            {t("form.submit")}
           </Button>
         </form>
       </CardContent>

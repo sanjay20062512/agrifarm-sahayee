@@ -2,13 +2,15 @@ import { useState } from "react";
 import { Header } from "@/components/Header";
 import { HeroSection } from "@/components/HeroSection";
 import { UserInputForm } from "@/components/UserInputForm";
-import { CropRecommendation } from "@/components/CropRecommendation";
+import { EnhancedCropRecommendation } from "@/components/EnhancedCropRecommendation";
 import { CropGuide } from "@/components/CropGuide";
+import { DailyFarmingSchedule } from "@/components/DailyFarmingSchedule";
 import { FarmerForumPost } from "@/components/FarmerForumPost";
 import { AIAssistance } from "@/components/AIAssistance";
 import { DiseaseDetector } from "@/components/DiseaseDetector";
 import { GovernmentSchemes } from "@/components/GovernmentSchemes";
 import { SchemeDetails } from "@/components/SchemeDetails";
+import { LanguageProvider } from "@/components/LanguageContext";
 
 interface FormData {
   state: string;
@@ -25,6 +27,7 @@ const Index = () => {
   const [showUserForm, setShowUserForm] = useState(false);
   const [selectedCrop, setSelectedCrop] = useState<string | null>(null);
   const [selectedScheme, setSelectedScheme] = useState<any | null>(null);
+  const [showDailySchedule, setShowDailySchedule] = useState(false);
 
   const handleFormSubmit = (data: FormData) => {
     setUserFormData(data);
@@ -39,6 +42,10 @@ const Index = () => {
 
   const handleStartPlant = (cropName: string) => {
     setSelectedCrop(cropName);
+  };
+
+  const handleViewSchedule = () => {
+    setShowDailySchedule(true);
   };
 
   const handleBackToCrops = () => {
