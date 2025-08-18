@@ -76,9 +76,12 @@ const Index = () => {
             {selectedCrop ? (
               <CropGuide cropName={selectedCrop} onBack={handleBackToCrops} />
             ) : userFormData ? (
-              <CropRecommendation 
+              <EnhancedCropRecommendation 
                 userLocation={`${userFormData.district}, ${userFormData.state}`}
+                userState={userFormData.state}
+                userDistrict={userFormData.district}
                 userSeason={userFormData.season}
+                soilType={userFormData.soilType}
                 onStartPlant={handleStartPlant}
               />
             ) : (
