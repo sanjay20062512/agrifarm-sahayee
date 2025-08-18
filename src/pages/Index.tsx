@@ -145,12 +145,14 @@ const Index = () => {
   });
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header activeTab={activeTab} setActiveTab={setActiveTab} />
-      <main>
-        {renderContent()}
-      </main>
-    </div>
+    <LanguageProvider>
+      <div className="min-h-screen bg-background">
+        <Header activeTab={activeTab} setActiveTab={setActiveTab} />
+        <main>
+          {renderContent()}
+        </main>
+      </div>
+    </LanguageProvider>
   );
 };
 
