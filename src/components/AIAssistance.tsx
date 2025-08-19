@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MessageCircle, Send, Bot, User } from "lucide-react";
+import { MessageCircle, Send, Bot, User, Brain } from "lucide-react";
+import { AgriAITwin } from "./AgriAITwin";
 
 interface Message {
   id: number;
@@ -21,6 +22,7 @@ export const AIAssistance = () => {
     }
   ]);
   const [newMessage, setNewMessage] = useState("");
+  const [showAITwin, setShowAITwin] = useState(false);
 
   const getAIResponse = (question: string): string => {
     const lowerQuestion = question.toLowerCase();
@@ -96,6 +98,10 @@ export const AIAssistance = () => {
     "Weather-based farming decisions"
   ];
 
+  if (showAITwin) {
+    return <AgriAITwin />;
+  }
+
   return (
     <div className="space-y-6">
       <div className="text-center space-y-2">
@@ -106,6 +112,15 @@ export const AIAssistance = () => {
         <p className="text-muted-foreground">
           Ask me anything about farming in Tamil or English
         </p>
+        <Button 
+          onClick={() => setShowAITwin(true)}
+          variant="outline"
+          size="lg"
+          className="mt-4 bg-gradient-to-r from-primary/10 to-accent/10 hover:from-primary/20 hover:to-accent/20"
+        >
+          <Brain className="w-5 h-5 mr-2" />
+          Launch Agri AI Twin
+        </Button>
       </div>
 
       <Card className="max-w-4xl mx-auto">

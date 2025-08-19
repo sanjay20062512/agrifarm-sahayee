@@ -4,7 +4,7 @@ import { HeroSection } from "@/components/HeroSection";
 import { UserInputForm } from "@/components/UserInputForm";
 import { EnhancedCropRecommendation } from "@/components/EnhancedCropRecommendation";
 import { CropGuide } from "@/components/CropGuide";
-import { DailyFarmingSchedule } from "@/components/DailyFarmingSchedule";
+import { EnhancedDailySchedule } from "@/components/EnhancedDailySchedule";
 import { FarmerForumPost } from "@/components/FarmerForumPost";
 import { AIAssistance } from "@/components/AIAssistance";
 import { DiseaseDetector } from "@/components/DiseaseDetector";
@@ -73,7 +73,16 @@ const Index = () => {
       case "crop-recommendation":
         return (
           <div className="container mx-auto px-4 py-8">
-            {selectedCrop ? (
+            {showDailySchedule && selectedCrop ? (
+              <EnhancedDailySchedule 
+                cropName={selectedCrop} 
+                totalDuration={120} 
+                onBack={() => {
+                  setShowDailySchedule(false);
+                  setSelectedCrop(null);
+                }} 
+              />
+            ) : selectedCrop ? (
               <CropGuide cropName={selectedCrop} onBack={handleBackToCrops} />
             ) : userFormData ? (
               <EnhancedCropRecommendation 
@@ -132,15 +141,23 @@ const Index = () => {
     }
   };
 
-  // Listen for scheme details event
+  // Listen for events
   useState(() => {
     const handleSchemeDetailsEvent = (event: any) => {
       handleSchemeDetails(event.detail);
     };
     
+    const handleDailyScheduleEvent = (event: any) => {
+      setSelectedCrop(event.detail.crop);
+      setShowDailySchedule(true);
+      setActiveTab("crop-recommendation");
+    };
+    
     window.addEventListener('showSchemeDetails', handleSchemeDetailsEvent);
+    window.addEventListener('viewDailySchedule', handleDailyScheduleEvent);
     return () => {
       window.removeEventListener('showSchemeDetails', handleSchemeDetailsEvent);
+      window.removeEventListener('viewDailySchedule', handleDailyScheduleEvent);
     };
   });
 
