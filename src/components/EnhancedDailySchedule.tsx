@@ -149,7 +149,7 @@ export const EnhancedDailySchedule = ({ cropName, totalDuration, onBack }: Enhan
       id: "week4-day28",
       day: 28,
       week: 4,
-      stage: language === 'tamil' ? "நடவு" : "Transplanting",
+      stage: language === 'ta' ? "நடவு" : "Transplanting",
       tasks: [
         { 
           id: "4-1", 
@@ -180,7 +180,7 @@ export const EnhancedDailySchedule = ({ cropName, totalDuration, onBack }: Enhan
       id: "week8-day56",
       day: 56,
       week: 8,
-      stage: language === 'tamil' ? "வளர்ச்சி நிலை" : "Vegetative Growth",
+      stage: language === 'ta' ? "வளர்ச்சி நிலை" : "Vegetative Growth",
       tasks: [
         { 
           id: "8-1", 
@@ -216,7 +216,7 @@ export const EnhancedDailySchedule = ({ cropName, totalDuration, onBack }: Enhan
       id: "week12-day84",
       day: 84,
       week: 12,
-      stage: language === 'tamil' ? "பூக்கும் நிலை" : "Flowering Stage",
+      stage: language === 'ta' ? "பூக்கும் நிலை" : "Flowering Stage",
       tasks: [
         { 
           id: "12-1", 
@@ -258,7 +258,7 @@ export const EnhancedDailySchedule = ({ cropName, totalDuration, onBack }: Enhan
       id: "week16-day110",
       day: 110,
       week: 16,
-      stage: language === 'tamil' ? "அறுவடை" : "Harvesting",
+      stage: language === 'ta' ? "அறுவடை" : "Harvesting",
       tasks: [
         { 
           id: "16-1", 
@@ -336,13 +336,13 @@ export const EnhancedDailySchedule = ({ cropName, totalDuration, onBack }: Enhan
       <div className="flex items-center justify-between">
         <div>
           <Button variant="ghost" onClick={onBack} className="mb-2">
-            ← {language === 'tamil' ? 'பயிர் வழிகாட்டிக்கு திரும்பு' : 'Back to Crop Guide'}
+            ← {language === 'ta' ? 'பயிர் வழிகாட்டிக்கு திரும்பு' : 'Back to Crop Guide'}
           </Button>
           <h1 className="text-3xl font-bold text-foreground">
-            {cropName} - {language === 'tamil' ? 'தினசரி விவசாய அட்டவணை' : 'Daily Farming Schedule'}
+            {cropName} - {language === 'ta' ? 'தினசரி விவசாய அட்டவணை' : 'Daily Farming Schedule'}
           </h1>
           <p className="text-muted-foreground">
-            {language === 'tamil' ? 
+            {language === 'ta' ? 
               `முழுமையான ${totalDuration}-நாள் விவசாய வழிகாட்டி` : 
               `Complete ${totalDuration}-day cultivation guide with daily tasks`
             }
@@ -351,7 +351,7 @@ export const EnhancedDailySchedule = ({ cropName, totalDuration, onBack }: Enhan
         <div className="text-right">
           <div className="text-2xl font-bold text-success">{getCompletionProgress()}%</div>
           <p className="text-sm text-muted-foreground">
-            {language === 'tamil' ? 'முடிந்தது' : 'Complete'}
+            {language === 'ta' ? 'முடிந்தது' : 'Complete'}
           </p>
         </div>
       </div>
@@ -365,7 +365,7 @@ export const EnhancedDailySchedule = ({ cropName, totalDuration, onBack }: Enhan
             size="sm"
             onClick={() => setCurrentWeek(week)}
           >
-            {language === 'tamil' ? `வாரம் ${week}` : `Week ${week}`}
+            {language === 'ta' ? `வாரம் ${week}` : `Week ${week}`}
           </Button>
         ))}
       </div>
@@ -374,7 +374,7 @@ export const EnhancedDailySchedule = ({ cropName, totalDuration, onBack }: Enhan
       <div className="space-y-4">
         <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
           <Calendar className="w-5 h-5 text-primary" />
-          {language === 'tamil' ? `வாரம் ${currentWeek} பணிகள்` : `Week ${currentWeek} Tasks`}
+          {language === 'ta' ? `வாரம் ${currentWeek} பணிகள்` : `Week ${currentWeek} Tasks`}
         </h2>
 
         {getWeekData().map((dayData) => (
@@ -383,17 +383,17 @@ export const EnhancedDailySchedule = ({ cropName, totalDuration, onBack }: Enhan
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="text-lg">
-                    {language === 'tamil' ? `நாள் ${dayData.day}` : `Day ${dayData.day}`} - {dayData.stage}
+                    {language === 'ta' ? `நாள் ${dayData.day}` : `Day ${dayData.day}`} - {dayData.stage}
                   </CardTitle>
                   <CardDescription>
-                    {language === 'tamil' ? 
+                    {language === 'ta' ? 
                       `வாரம் ${dayData.week} / ${Math.ceil(totalDuration / 7)}` :
                       `Week ${dayData.week} of ${Math.ceil(totalDuration / 7)}`
                     }
                   </CardDescription>
                 </div>
                 <Badge variant="outline" className="bg-primary/10">
-                  {dayData.tasks.length} {language === 'tamil' ? 'பணிகள்' : 'tasks'}
+                  {dayData.tasks.length} {language === 'ta' ? 'பணிகள்' : 'tasks'}
                 </Badge>
               </div>
             </CardHeader>
@@ -405,7 +405,7 @@ export const EnhancedDailySchedule = ({ cropName, totalDuration, onBack }: Enhan
                     <div className="flex items-center justify-between mb-2">
                       <h4 className="font-semibold flex items-center gap-2">
                         <IndianRupee className="w-4 h-4" />
-                        {language === 'tamil' ? 'சந்தை விலை தகவல்' : 'Market Price Info'}
+                        {language === 'ta' ? 'சந்தை விலை தகவல்' : 'Market Price Info'}
                       </h4>
                       <div className="flex items-center gap-1">
                         <span className="text-lg font-bold">₹{dayData.market_price.current}</span>
@@ -416,14 +416,14 @@ export const EnhancedDailySchedule = ({ cropName, totalDuration, onBack }: Enhan
                       <div className="flex items-center gap-2">
                         <Clock className="w-3 h-3" />
                         <span className="font-medium">
-                          {language === 'tamil' ? 'சிறந்த விற்பனை நேரம்:' : 'Best selling time:'}
+                          {language === 'ta' ? 'சிறந்த விற்பனை நேரம்:' : 'Best selling time:'}
                         </span>
                         <span>{dayData.market_price.best_selling_time}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <MapPin className="w-3 h-3" />
                         <span className="font-medium">
-                          {language === 'tamil' ? 'சிறந்த விற்பனை இடம்:' : 'Best place:'}
+                          {language === 'ta' ? 'சிறந்த விற்பனை இடம்:' : 'Best place:'}
                         </span>
                         <span>{dayData.market_price.best_selling_place}</span>
                       </div>
@@ -454,7 +454,7 @@ export const EnhancedDailySchedule = ({ cropName, totalDuration, onBack }: Enhan
                       <span className={`text-sm font-medium ${
                         completedTasks.includes(task.id) ? 'line-through text-muted-foreground' : ''
                       }`}>
-                        {language === 'tamil' ? task.taskTamil : task.task}
+                        {language === 'ta' ? task.taskTamil : task.task}
                       </span>
                     </div>
                     
@@ -464,33 +464,37 @@ export const EnhancedDailySchedule = ({ cropName, totalDuration, onBack }: Enhan
                       </Badge>
                       
                       {task.weather_dependent && (
-                        <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-                          <AlertTriangle className="w-3 h-3 mr-1" />
-                          {language === 'tamil' ? 'வானிலை சார்ந்த' : 'Weather Dependent'}
+                        <Badge variant="outline" className="bg-sky-100 text-sky-800 border-sky-300">
+                          {language === 'ta' ? 'வானிலை சார்ந்த' : 'Weather Dependent'}
                         </Badge>
                       )}
                     </div>
 
-                    {/* Detailed Information */}
+                    {/* Fertilizer Details */}
                     {task.fertilizer_details && (
-                      <div className="bg-muted/30 p-3 rounded-lg text-xs space-y-1">
-                        <div className="font-semibold text-yellow-600">
-                          {language === 'tamil' ? 'உர விவரங்கள்:' : 'Fertilizer Details:'}
+                      <div className="mt-2 p-2 bg-yellow-50 rounded-md border border-yellow-200">
+                        <h5 className="text-xs font-semibold text-yellow-800 mb-1">
+                          {language === 'ta' ? 'உர விவரங்கள்:' : 'Fertilizer Details:'}
+                        </h5>
+                        <div className="text-xs text-yellow-700 space-y-1">
+                          <div><strong>{language === 'ta' ? 'இரசாயன:' : 'Chemical:'}</strong> {task.fertilizer_details.chemical}</div>
+                          <div><strong>{language === 'ta' ? 'இயற்கை:' : 'Organic:'}</strong> {task.fertilizer_details.organic}</div>
+                          <div><strong>{language === 'ta' ? 'முறை:' : 'Method:'}</strong> {task.fertilizer_details.quantity}</div>
                         </div>
-                        <div><strong>{language === 'tamil' ? 'இரசாயன:' : 'Chemical:'}</strong> {task.fertilizer_details.chemical}</div>
-                        <div><strong>{language === 'tamil' ? 'இயற்கை:' : 'Organic:'}</strong> {task.fertilizer_details.organic}</div>
-                        <div><strong>{language === 'tamil' ? 'முறை:' : 'Method:'}</strong> {task.fertilizer_details.quantity}</div>
                       </div>
                     )}
 
+                    {/* Pest Control Details */}
                     {task.pest_details && (
-                      <div className="bg-muted/30 p-3 rounded-lg text-xs space-y-1">
-                        <div className="font-semibold text-red-600">
-                          {language === 'tamil' ? 'பூச்சி கட்டுப்பாடு விவரங்கள்:' : 'Pest Control Details:'}
+                      <div className="mt-2 p-2 bg-red-50 rounded-md border border-red-200">
+                        <h5 className="text-xs font-semibold text-red-800 mb-1">
+                          {language === 'ta' ? 'பூச்சி கட்டுப்பாடு விவரங்கள்:' : 'Pest Control Details:'}
+                        </h5>
+                        <div className="text-xs text-red-700 space-y-1">
+                          <div><strong>{language === 'ta' ? 'இலக்கு:' : 'Target:'}</strong> {task.pest_details.target}</div>
+                          <div><strong>{language === 'ta' ? 'முறை:' : 'Method:'}</strong> {task.pest_details.method}</div>
+                          <div><strong>{language === 'ta' ? 'நேரம்:' : 'Timing:'}</strong> {task.pest_details.timing}</div>
                         </div>
-                        <div><strong>{language === 'tamil' ? 'இலக்கு:' : 'Target:'}</strong> {task.pest_details.target}</div>
-                        <div><strong>{language === 'tamil' ? 'முறை:' : 'Method:'}</strong> {task.pest_details.method}</div>
-                        <div><strong>{language === 'tamil' ? 'நேரம்:' : 'Timing:'}</strong> {task.pest_details.timing}</div>
                       </div>
                     )}
                   </div>
@@ -502,34 +506,34 @@ export const EnhancedDailySchedule = ({ cropName, totalDuration, onBack }: Enhan
       </div>
 
       {/* Progress Summary */}
-      <Card className="bg-gradient-earth">
+      <Card className="bg-gradient-to-r from-primary/10 to-accent/10">
         <CardContent className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
             <div>
-              <div className="text-2xl font-bold text-foreground">{completedTasks.length}</div>
-              <p className="text-sm text-muted-foreground">
-                {language === 'tamil' ? 'முடிந்த பணிகள்' : 'Tasks Completed'}
-              </p>
+              <div className="text-2xl font-bold text-success">{completedTasks.length}</div>
+              <div className="text-sm text-muted-foreground">
+                {language === 'ta' ? 'முடிந்த பணிகள்' : 'Tasks Completed'}
+              </div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-foreground">
+              <div className="text-2xl font-bold text-warning">
                 {dailySchedule.reduce((acc, item) => acc + item.tasks.length, 0) - completedTasks.length}
               </div>
-              <p className="text-sm text-muted-foreground">
-                {language === 'tamil' ? 'மீதமுள்ள பணிகள்' : 'Tasks Remaining'}
-              </p>
+              <div className="text-sm text-muted-foreground">
+                {language === 'ta' ? 'மீதமுள்ள பணிகள்' : 'Tasks Remaining'}
+              </div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-foreground">{currentWeek}</div>
-              <p className="text-sm text-muted-foreground">
-                {language === 'tamil' ? 'தற்போதைய வாரம்' : 'Current Week'}
-              </p>
+              <div className="text-2xl font-bold text-primary">{currentWeek}</div>
+              <div className="text-sm text-muted-foreground">
+                {language === 'ta' ? 'தற்போதைய வாரம்' : 'Current Week'}
+              </div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-foreground">{Math.ceil(totalDuration / 7)}</div>
-              <p className="text-sm text-muted-foreground">
-                {language === 'tamil' ? 'மொத்த வாரங்கள்' : 'Total Weeks'}
-              </p>
+              <div className="text-2xl font-bold text-accent">{Math.ceil(totalDuration / 7)}</div>
+              <div className="text-sm text-muted-foreground">
+                {language === 'ta' ? 'மொத்த வாரங்கள்' : 'Total Weeks'}
+              </div>
             </div>
           </div>
         </CardContent>
