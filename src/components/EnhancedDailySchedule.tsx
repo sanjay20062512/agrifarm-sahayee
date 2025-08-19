@@ -109,7 +109,7 @@ export const EnhancedDailySchedule = ({ cropName, totalDuration, onBack }: Enhan
       id: "week1-day3",
       day: 3,
       week: 1,
-      stage: language === 'tamil' ? "விதைப்பு தயாரிப்பு" : "Seedbed Preparation",
+      stage: language === 'ta' ? "விதைப்பு தயாரிப்பு" : "Seedbed Preparation",
       tasks: [
         { 
           id: "1-4", 
