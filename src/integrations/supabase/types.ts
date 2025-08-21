@@ -14,7 +14,552 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      forum_posts: {
+        Row: {
+          author_id: string | null
+          author_location: string
+          author_name: string
+          category: string
+          content: string
+          created_at: string
+          guest_session_id: string | null
+          id: string
+          is_guest_post: boolean | null
+          likes_count: number | null
+          replies_count: number | null
+          status: string | null
+          tags: string[] | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_id?: string | null
+          author_location: string
+          author_name: string
+          category: string
+          content: string
+          created_at?: string
+          guest_session_id?: string | null
+          id?: string
+          is_guest_post?: boolean | null
+          likes_count?: number | null
+          replies_count?: number | null
+          status?: string | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string | null
+          author_location?: string
+          author_name?: string
+          category?: string
+          content?: string
+          created_at?: string
+          guest_session_id?: string | null
+          id?: string
+          is_guest_post?: boolean | null
+          likes_count?: number | null
+          replies_count?: number | null
+          status?: string | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      forum_replies: {
+        Row: {
+          author_id: string | null
+          author_name: string
+          content: string
+          created_at: string
+          guest_session_id: string | null
+          id: string
+          is_guest_reply: boolean | null
+          likes_count: number | null
+          post_id: string | null
+        }
+        Insert: {
+          author_id?: string | null
+          author_name: string
+          content: string
+          created_at?: string
+          guest_session_id?: string | null
+          id?: string
+          is_guest_reply?: boolean | null
+          likes_count?: number | null
+          post_id?: string | null
+        }
+        Update: {
+          author_id?: string | null
+          author_name?: string
+          content?: string
+          created_at?: string
+          guest_session_id?: string | null
+          id?: string
+          is_guest_reply?: boolean | null
+          likes_count?: number | null
+          post_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forum_replies_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "forum_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      labor_bookings: {
+        Row: {
+          created_at: string
+          district: string
+          end_date: string
+          end_time: string | null
+          farmer_id: string | null
+          farmer_notes: string | null
+          id: string
+          labor_id: string | null
+          labor_notes: string | null
+          location: string
+          number_of_workers: number | null
+          offered_wage: number
+          payment_status: string | null
+          required_skills: Database["public"]["Enums"]["skill_type"][]
+          start_date: string
+          start_time: string | null
+          state: string
+          status: Database["public"]["Enums"]["booking_status"] | null
+          task_description: string
+          total_amount: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          district: string
+          end_date: string
+          end_time?: string | null
+          farmer_id?: string | null
+          farmer_notes?: string | null
+          id?: string
+          labor_id?: string | null
+          labor_notes?: string | null
+          location: string
+          number_of_workers?: number | null
+          offered_wage: number
+          payment_status?: string | null
+          required_skills?: Database["public"]["Enums"]["skill_type"][]
+          start_date: string
+          start_time?: string | null
+          state: string
+          status?: Database["public"]["Enums"]["booking_status"] | null
+          task_description: string
+          total_amount?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          district?: string
+          end_date?: string
+          end_time?: string | null
+          farmer_id?: string | null
+          farmer_notes?: string | null
+          id?: string
+          labor_id?: string | null
+          labor_notes?: string | null
+          location?: string
+          number_of_workers?: number | null
+          offered_wage?: number
+          payment_status?: string | null
+          required_skills?: Database["public"]["Enums"]["skill_type"][]
+          start_date?: string
+          start_time?: string | null
+          state?: string
+          status?: Database["public"]["Enums"]["booking_status"] | null
+          task_description?: string
+          total_amount?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "labor_bookings_labor_id_fkey"
+            columns: ["labor_id"]
+            isOneToOne: false
+            referencedRelation: "labor_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      labor_profiles: {
+        Row: {
+          availability:
+            | Database["public"]["Enums"]["availability_status"]
+            | null
+          bank_account: string | null
+          created_at: string
+          daily_wage_max: number
+          daily_wage_min: number
+          description: string | null
+          district: string
+          experience_years: number | null
+          government_id: string | null
+          id: string
+          location: string
+          name: string
+          phone: string
+          pincode: string | null
+          profile_image: string | null
+          rating: number | null
+          skills: Database["public"]["Enums"]["skill_type"][]
+          state: string
+          total_reviews: number | null
+          updated_at: string
+          user_id: string | null
+          verified: boolean | null
+        }
+        Insert: {
+          availability?:
+            | Database["public"]["Enums"]["availability_status"]
+            | null
+          bank_account?: string | null
+          created_at?: string
+          daily_wage_max: number
+          daily_wage_min: number
+          description?: string | null
+          district: string
+          experience_years?: number | null
+          government_id?: string | null
+          id?: string
+          location: string
+          name: string
+          phone: string
+          pincode?: string | null
+          profile_image?: string | null
+          rating?: number | null
+          skills?: Database["public"]["Enums"]["skill_type"][]
+          state: string
+          total_reviews?: number | null
+          updated_at?: string
+          user_id?: string | null
+          verified?: boolean | null
+        }
+        Update: {
+          availability?:
+            | Database["public"]["Enums"]["availability_status"]
+            | null
+          bank_account?: string | null
+          created_at?: string
+          daily_wage_max?: number
+          daily_wage_min?: number
+          description?: string | null
+          district?: string
+          experience_years?: number | null
+          government_id?: string | null
+          id?: string
+          location?: string
+          name?: string
+          phone?: string
+          pincode?: string | null
+          profile_image?: string | null
+          rating?: number | null
+          skills?: Database["public"]["Enums"]["skill_type"][]
+          state?: string
+          total_reviews?: number | null
+          updated_at?: string
+          user_id?: string | null
+          verified?: boolean | null
+        }
+        Relationships: []
+      }
+      machinery_bookings: {
+        Row: {
+          booking_type: string
+          created_at: string
+          days: number | null
+          district: string
+          end_date: string
+          end_time: string | null
+          farmer_id: string | null
+          farmer_notes: string | null
+          fuel_cost: number | null
+          hours: number | null
+          id: string
+          location: string
+          machinery_id: string | null
+          operator_cost: number | null
+          operator_required: boolean | null
+          owner_notes: string | null
+          payment_status: string | null
+          rate_per_unit: number
+          start_date: string
+          start_time: string | null
+          state: string
+          status: Database["public"]["Enums"]["booking_status"] | null
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          booking_type: string
+          created_at?: string
+          days?: number | null
+          district: string
+          end_date: string
+          end_time?: string | null
+          farmer_id?: string | null
+          farmer_notes?: string | null
+          fuel_cost?: number | null
+          hours?: number | null
+          id?: string
+          location: string
+          machinery_id?: string | null
+          operator_cost?: number | null
+          operator_required?: boolean | null
+          owner_notes?: string | null
+          payment_status?: string | null
+          rate_per_unit: number
+          start_date: string
+          start_time?: string | null
+          state: string
+          status?: Database["public"]["Enums"]["booking_status"] | null
+          total_amount: number
+          updated_at?: string
+        }
+        Update: {
+          booking_type?: string
+          created_at?: string
+          days?: number | null
+          district?: string
+          end_date?: string
+          end_time?: string | null
+          farmer_id?: string | null
+          farmer_notes?: string | null
+          fuel_cost?: number | null
+          hours?: number | null
+          id?: string
+          location?: string
+          machinery_id?: string | null
+          operator_cost?: number | null
+          operator_required?: boolean | null
+          owner_notes?: string | null
+          payment_status?: string | null
+          rate_per_unit?: number
+          start_date?: string
+          start_time?: string | null
+          state?: string
+          status?: Database["public"]["Enums"]["booking_status"] | null
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "machinery_bookings_machinery_id_fkey"
+            columns: ["machinery_id"]
+            isOneToOne: false
+            referencedRelation: "machinery_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      machinery_profiles: {
+        Row: {
+          availability:
+            | Database["public"]["Enums"]["availability_status"]
+            | null
+          brand: string
+          created_at: string
+          daily_rate: number
+          description: string | null
+          district: string
+          fuel_type: string | null
+          horsepower: number | null
+          hourly_rate: number
+          id: string
+          location: string
+          machinery_images: string[] | null
+          machinery_type: Database["public"]["Enums"]["machinery_type"]
+          model: string
+          owner_id: string | null
+          owner_name: string
+          owner_phone: string
+          pincode: string | null
+          rating: number | null
+          state: string
+          total_reviews: number | null
+          updated_at: string
+          verified: boolean | null
+          working_width: number | null
+          year_of_purchase: number | null
+        }
+        Insert: {
+          availability?:
+            | Database["public"]["Enums"]["availability_status"]
+            | null
+          brand: string
+          created_at?: string
+          daily_rate: number
+          description?: string | null
+          district: string
+          fuel_type?: string | null
+          horsepower?: number | null
+          hourly_rate: number
+          id?: string
+          location: string
+          machinery_images?: string[] | null
+          machinery_type: Database["public"]["Enums"]["machinery_type"]
+          model: string
+          owner_id?: string | null
+          owner_name: string
+          owner_phone: string
+          pincode?: string | null
+          rating?: number | null
+          state: string
+          total_reviews?: number | null
+          updated_at?: string
+          verified?: boolean | null
+          working_width?: number | null
+          year_of_purchase?: number | null
+        }
+        Update: {
+          availability?:
+            | Database["public"]["Enums"]["availability_status"]
+            | null
+          brand?: string
+          created_at?: string
+          daily_rate?: number
+          description?: string | null
+          district?: string
+          fuel_type?: string | null
+          horsepower?: number | null
+          hourly_rate?: number
+          id?: string
+          location?: string
+          machinery_images?: string[] | null
+          machinery_type?: Database["public"]["Enums"]["machinery_type"]
+          model?: string
+          owner_id?: string | null
+          owner_name?: string
+          owner_phone?: string
+          pincode?: string | null
+          rating?: number | null
+          state?: string
+          total_reviews?: number | null
+          updated_at?: string
+          verified?: boolean | null
+          working_width?: number | null
+          year_of_purchase?: number | null
+        }
+        Relationships: []
+      }
+      market_prices: {
+        Row: {
+          created_at: string
+          crop_name: string
+          district: string
+          id: string
+          location: string
+          market_name: string
+          price_date: string
+          price_per_kg: number
+          price_per_quintal: number
+          quality_grade: string | null
+          source: string | null
+          state: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          crop_name: string
+          district: string
+          id?: string
+          location: string
+          market_name: string
+          price_date?: string
+          price_per_kg: number
+          price_per_quintal: number
+          quality_grade?: string | null
+          source?: string | null
+          state: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          crop_name?: string
+          district?: string
+          id?: string
+          location?: string
+          market_name?: string
+          price_date?: string
+          price_per_kg?: number
+          price_per_quintal?: number
+          quality_grade?: string | null
+          source?: string | null
+          state?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      reviews: {
+        Row: {
+          booking_id: string | null
+          comment: string | null
+          communication: number | null
+          created_at: string
+          id: string
+          labor_id: string | null
+          machinery_id: string | null
+          punctuality: number | null
+          rating: number
+          reviewee_type: string
+          reviewer_id: string | null
+          work_quality: number | null
+        }
+        Insert: {
+          booking_id?: string | null
+          comment?: string | null
+          communication?: number | null
+          created_at?: string
+          id?: string
+          labor_id?: string | null
+          machinery_id?: string | null
+          punctuality?: number | null
+          rating: number
+          reviewee_type: string
+          reviewer_id?: string | null
+          work_quality?: number | null
+        }
+        Update: {
+          booking_id?: string | null
+          comment?: string | null
+          communication?: number | null
+          created_at?: string
+          id?: string
+          labor_id?: string | null
+          machinery_id?: string | null
+          punctuality?: number | null
+          rating?: number
+          reviewee_type?: string
+          reviewer_id?: string | null
+          work_quality?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_labor_id_fkey"
+            columns: ["labor_id"]
+            isOneToOne: false
+            referencedRelation: "labor_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_machinery_id_fkey"
+            columns: ["machinery_id"]
+            isOneToOne: false
+            referencedRelation: "machinery_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +568,35 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      availability_status: "available" | "busy" | "inactive"
+      booking_status:
+        | "pending"
+        | "confirmed"
+        | "in_progress"
+        | "completed"
+        | "cancelled"
+      machinery_type:
+        | "tractor"
+        | "harvester"
+        | "tiller"
+        | "irrigation_pump"
+        | "sprayer"
+        | "seed_drill"
+        | "thresher"
+        | "cultivator"
+        | "plough"
+        | "rotavator"
+      skill_type:
+        | "harvesting"
+        | "sowing"
+        | "irrigation"
+        | "pest_control"
+        | "fertilizer_application"
+        | "land_preparation"
+        | "weeding"
+        | "transplanting"
+        | "pruning"
+        | "general_labor"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +723,39 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      availability_status: ["available", "busy", "inactive"],
+      booking_status: [
+        "pending",
+        "confirmed",
+        "in_progress",
+        "completed",
+        "cancelled",
+      ],
+      machinery_type: [
+        "tractor",
+        "harvester",
+        "tiller",
+        "irrigation_pump",
+        "sprayer",
+        "seed_drill",
+        "thresher",
+        "cultivator",
+        "plough",
+        "rotavator",
+      ],
+      skill_type: [
+        "harvesting",
+        "sowing",
+        "irrigation",
+        "pest_control",
+        "fertilizer_application",
+        "land_preparation",
+        "weeding",
+        "transplanting",
+        "pruning",
+        "general_labor",
+      ],
+    },
   },
 } as const
