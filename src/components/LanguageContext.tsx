@@ -15,8 +15,6 @@ const translations = {
     'nav.ai-assistance': 'AI Assistance',
     'nav.disease-detector': 'Disease Detector',
     'nav.government-schemes': 'Government Schemes',
-    'nav.labor-hiring': 'Labor Hiring',
-    'nav.machinery-rental': 'Machinery Rental',
     
     // User Input Form
     'form.title': 'Farm Details Required',
@@ -63,8 +61,6 @@ const translations = {
     'nav.ai-assistance': 'AI உதவி',
     'nav.disease-detector': 'நோய் கண்டறிதல்',
     'nav.government-schemes': 'அரசு திட்டங்கள்',
-    'nav.labor-hiring': 'தொழிலாளர் வேலை',
-    'nav.machinery-rental': 'இயந்திர வாடகை',
     
     // User Input Form
     'form.title': 'பண்ணை விவரங்கள் தேவை',

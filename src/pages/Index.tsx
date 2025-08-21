@@ -6,13 +6,10 @@ import { EnhancedCropRecommendation } from "@/components/EnhancedCropRecommendat
 import { CropGuide } from "@/components/CropGuide";
 import { EnhancedDailySchedule } from "@/components/EnhancedDailySchedule";
 import { FarmerForumPost } from "@/components/FarmerForumPost";
-import { EnhancedFarmerForum } from "@/components/EnhancedFarmerForum";
 import { AIAssistance } from "@/components/AIAssistance";
 import { DiseaseDetector } from "@/components/DiseaseDetector";
 import { GovernmentSchemes } from "@/components/GovernmentSchemes";
 import { SchemeDetails } from "@/components/SchemeDetails";
-import { LaborHiring } from "@/components/LaborHiring";
-import { MachineryRental } from "@/components/MachineryRental";
 import { LanguageProvider } from "@/components/LanguageContext";
 
 interface FormData {
@@ -114,7 +111,7 @@ const Index = () => {
       case "farmer-forum":
         return (
           <div className="container mx-auto px-4 py-8">
-            <EnhancedFarmerForum />
+            <FarmerForumPost />
           </div>
         );
       case "ai-assistance":
@@ -137,18 +134,6 @@ const Index = () => {
             ) : (
               <GovernmentSchemes />
             )}
-          </div>
-        );
-      case "labor-hiring":
-        return (
-          <div className="container mx-auto px-4 py-8">
-            <LaborHiring />
-          </div>
-        );
-      case "machinery-rental":
-        return (
-          <div className="container mx-auto px-4 py-8">
-            <MachineryRental />
           </div>
         );
       default:
