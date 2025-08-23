@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      daily_schedules: {
+        Row: {
+          created_at: string
+          crop_name: string
+          district: string
+          farmer_name: string
+          id: string
+          location: string
+          schedule_data: Json
+          soil_type: string | null
+          start_date: string
+          state: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          crop_name: string
+          district: string
+          farmer_name: string
+          id?: string
+          location: string
+          schedule_data: Json
+          soil_type?: string | null
+          start_date: string
+          state: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          crop_name?: string
+          district?: string
+          farmer_name?: string
+          id?: string
+          location?: string
+          schedule_data?: Json
+          soil_type?: string | null
+          start_date?: string
+          state?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       forum_posts: {
         Row: {
           author_id: string | null
@@ -111,6 +156,135 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      job_profiles: {
+        Row: {
+          availability: boolean | null
+          bank_account: string | null
+          created_at: string
+          description: string | null
+          district: string
+          expected_wage_max: number
+          expected_wage_min: number
+          experience_years: number | null
+          government_id: string | null
+          id: string
+          location: string
+          name: string
+          phone: string
+          pincode: string | null
+          profile_image: string | null
+          skills: string[]
+          specialization: string | null
+          state: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          availability?: boolean | null
+          bank_account?: string | null
+          created_at?: string
+          description?: string | null
+          district: string
+          expected_wage_max: number
+          expected_wage_min: number
+          experience_years?: number | null
+          government_id?: string | null
+          id?: string
+          location: string
+          name: string
+          phone: string
+          pincode?: string | null
+          profile_image?: string | null
+          skills?: string[]
+          specialization?: string | null
+          state: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          availability?: boolean | null
+          bank_account?: string | null
+          created_at?: string
+          description?: string | null
+          district?: string
+          expected_wage_max?: number
+          expected_wage_min?: number
+          experience_years?: number | null
+          government_id?: string | null
+          id?: string
+          location?: string
+          name?: string
+          phone?: string
+          pincode?: string | null
+          profile_image?: string | null
+          skills?: string[]
+          specialization?: string | null
+          state?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      job_requirements: {
+        Row: {
+          created_at: string
+          district: string
+          end_date: string | null
+          farmer_name: string
+          farmer_phone: string
+          id: string
+          job_description: string
+          job_location: string
+          number_of_workers: number | null
+          offered_wage: number
+          required_skills: string[]
+          start_date: string
+          state: string
+          status: string | null
+          updated_at: string
+          urgent: boolean | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          district: string
+          end_date?: string | null
+          farmer_name: string
+          farmer_phone: string
+          id?: string
+          job_description: string
+          job_location: string
+          number_of_workers?: number | null
+          offered_wage: number
+          required_skills?: string[]
+          start_date: string
+          state: string
+          status?: string | null
+          updated_at?: string
+          urgent?: boolean | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          district?: string
+          end_date?: string | null
+          farmer_name?: string
+          farmer_phone?: string
+          id?: string
+          job_description?: string
+          job_location?: string
+          number_of_workers?: number | null
+          offered_wage?: number
+          required_skills?: string[]
+          start_date?: string
+          state?: string
+          status?: string | null
+          updated_at?: string
+          urgent?: boolean | null
+          user_id?: string | null
+        }
+        Relationships: []
       }
       labor_bookings: {
         Row: {
@@ -362,6 +536,84 @@ export type Database = {
           },
         ]
       }
+      machinery_listings: {
+        Row: {
+          availability: boolean | null
+          brand: string
+          created_at: string
+          daily_rate: number
+          description: string | null
+          district: string
+          fuel_type: string | null
+          horsepower: number | null
+          hourly_rate: number
+          id: string
+          location: string
+          machinery_images: string[] | null
+          machinery_type: string
+          model: string
+          owner_name: string
+          owner_phone: string
+          pincode: string | null
+          state: string
+          updated_at: string
+          user_id: string | null
+          verified: boolean | null
+          working_width: number | null
+          year_of_purchase: number | null
+        }
+        Insert: {
+          availability?: boolean | null
+          brand: string
+          created_at?: string
+          daily_rate: number
+          description?: string | null
+          district: string
+          fuel_type?: string | null
+          horsepower?: number | null
+          hourly_rate: number
+          id?: string
+          location: string
+          machinery_images?: string[] | null
+          machinery_type: string
+          model: string
+          owner_name: string
+          owner_phone: string
+          pincode?: string | null
+          state: string
+          updated_at?: string
+          user_id?: string | null
+          verified?: boolean | null
+          working_width?: number | null
+          year_of_purchase?: number | null
+        }
+        Update: {
+          availability?: boolean | null
+          brand?: string
+          created_at?: string
+          daily_rate?: number
+          description?: string | null
+          district?: string
+          fuel_type?: string | null
+          horsepower?: number | null
+          hourly_rate?: number
+          id?: string
+          location?: string
+          machinery_images?: string[] | null
+          machinery_type?: string
+          model?: string
+          owner_name?: string
+          owner_phone?: string
+          pincode?: string | null
+          state?: string
+          updated_at?: string
+          user_id?: string | null
+          verified?: boolean | null
+          working_width?: number | null
+          year_of_purchase?: number | null
+        }
+        Relationships: []
+      }
       machinery_profiles: {
         Row: {
           availability:
@@ -449,6 +701,72 @@ export type Database = {
           verified?: boolean | null
           working_width?: number | null
           year_of_purchase?: number | null
+        }
+        Relationships: []
+      }
+      machinery_requirements: {
+        Row: {
+          created_at: string
+          district: string
+          duration_days: number | null
+          duration_hours: number | null
+          farmer_name: string
+          farmer_phone: string
+          id: string
+          location: string
+          max_daily_rate: number | null
+          max_hourly_rate: number | null
+          preferred_brand: string | null
+          required_date: string
+          required_machinery_type: string
+          specific_requirements: string | null
+          state: string
+          status: string | null
+          updated_at: string
+          urgent: boolean | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          district: string
+          duration_days?: number | null
+          duration_hours?: number | null
+          farmer_name: string
+          farmer_phone: string
+          id?: string
+          location: string
+          max_daily_rate?: number | null
+          max_hourly_rate?: number | null
+          preferred_brand?: string | null
+          required_date: string
+          required_machinery_type: string
+          specific_requirements?: string | null
+          state: string
+          status?: string | null
+          updated_at?: string
+          urgent?: boolean | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          district?: string
+          duration_days?: number | null
+          duration_hours?: number | null
+          farmer_name?: string
+          farmer_phone?: string
+          id?: string
+          location?: string
+          max_daily_rate?: number | null
+          max_hourly_rate?: number | null
+          preferred_brand?: string | null
+          required_date?: string
+          required_machinery_type?: string
+          specific_requirements?: string | null
+          state?: string
+          status?: string | null
+          updated_at?: string
+          urgent?: boolean | null
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -559,6 +877,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      weather_alerts: {
+        Row: {
+          alert_type: string | null
+          created_at: string
+          district: string
+          id: string
+          location: string
+          message: string | null
+          severity: string | null
+          state: string
+          valid_until: string | null
+          weather_data: Json
+        }
+        Insert: {
+          alert_type?: string | null
+          created_at?: string
+          district: string
+          id?: string
+          location: string
+          message?: string | null
+          severity?: string | null
+          state: string
+          valid_until?: string | null
+          weather_data: Json
+        }
+        Update: {
+          alert_type?: string | null
+          created_at?: string
+          district?: string
+          id?: string
+          location?: string
+          message?: string | null
+          severity?: string | null
+          state?: string
+          valid_until?: string | null
+          weather_data?: Json
+        }
+        Relationships: []
       }
     }
     Views: {
