@@ -6,9 +6,13 @@ import {
   MessageCircle, 
   Camera, 
   Building2,
+  UserCog,
+  Tractor,
   Menu,
-  X
+  X,
+  Globe
 } from "lucide-react";
+import { useLanguage } from "./LanguageContext";
 
 interface HeaderProps {
   activeTab: string;
@@ -17,37 +21,50 @@ interface HeaderProps {
 
 export const Header = ({ activeTab, setActiveTab }: HeaderProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { language, setLanguage, t } = useLanguage();
 
   const navigationItems = [
     { 
       id: "crop-recommendation", 
-      label: "Crop Recommendation", 
+      label: t("nav.crop-recommendation"), 
       icon: Leaf,
       variant: "nav" as const
     },
     { 
       id: "farmer-forum", 
-      label: "Farmer Forum", 
+      label: t("nav.farmer-forum"), 
       icon: Users,
       variant: "harvest" as const
     },
     { 
       id: "ai-assistance", 
-      label: "AI Assistance", 
+      label: t("nav.ai-assistance"), 
       icon: MessageCircle,
       variant: "crop" as const
     },
     { 
       id: "disease-detector", 
-      label: "AI Disease Detector", 
+      label: t("nav.disease-detector"), 
       icon: Camera,
       variant: "earth" as const
     },
     { 
       id: "government-schemes", 
-      label: "Government Schemes", 
+      label: t("nav.government-schemes"), 
       icon: Building2,
       variant: "nav" as const
+    },
+    { 
+      id: "labor-hiring", 
+      label: t("nav.labor-hiring"), 
+      icon: UserCog,
+      variant: "harvest" as const
+    },
+    { 
+      id: "machinery-rental", 
+      label: t("nav.machinery-rental"), 
+      icon: Tractor,
+      variant: "crop" as const
     }
   ];
 
@@ -61,7 +78,7 @@ export const Header = ({ activeTab, setActiveTab }: HeaderProps) => {
               <Leaf className="w-6 h-6 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-foreground">AgriAI</h1>
+              <h1 className="text-xl font-bold text-foreground">{t("app.title")}</h1>
               <p className="text-xs text-muted-foreground">Smart Farming Assistant</p>
             </div>
           </div>
@@ -84,6 +101,17 @@ export const Header = ({ activeTab, setActiveTab }: HeaderProps) => {
               );
             })}
           </nav>
+
+          {/* Language Toggle */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setLanguage(language === 'en' ? 'ta' : 'en')}
+            className="hidden lg:flex items-center gap-2"
+          >
+            <Globe className="w-4 h-4" />
+            {language === 'en' ? 'தமிழ்' : 'English'}
+          </Button>
 
           {/* Mobile Menu Button */}
           <Button
@@ -117,6 +145,14 @@ export const Header = ({ activeTab, setActiveTab }: HeaderProps) => {
                   </Button>
                 );
               })}
+              <Button
+                variant="ghost"
+                onClick={() => setLanguage(language === 'en' ? 'ta' : 'en')}
+                className="w-full justify-start"
+              >
+                <Globe className="w-4 h-4 mr-2" />
+                {language === 'en' ? 'தமிழ்' : 'English'}
+              </Button>
             </nav>
           </div>
         )}
