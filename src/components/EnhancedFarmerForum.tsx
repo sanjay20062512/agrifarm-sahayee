@@ -52,7 +52,7 @@ export const EnhancedFarmerForum = () => {
   const [posts, setPosts] = useState<ForumPost[]>([]);
   const [filteredPosts, setFilteredPosts] = useState<ForumPost[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [isGuest, setIsGuest] = useState(true); // For demo, assume guest mode
   const [isLoading, setIsLoading] = useState(true);
@@ -103,7 +103,7 @@ export const EnhancedFarmerForum = () => {
       );
     }
 
-    if (selectedCategory) {
+    if (selectedCategory && selectedCategory !== "all") {
       filtered = filtered.filter(post => post.category === selectedCategory);
     }
 
@@ -200,7 +200,7 @@ export const EnhancedFarmerForum = () => {
                   <SelectValue placeholder="All Categories" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Categories</SelectItem>
+                  <SelectItem value="all">All Categories</SelectItem>
                   {categories.map((category) => (
                     <SelectItem key={category} value={category}>{category}</SelectItem>
                   ))}

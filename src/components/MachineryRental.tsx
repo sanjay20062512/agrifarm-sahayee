@@ -60,7 +60,7 @@ export const MachineryRental = () => {
   const [machinery, setMachinery] = useState<MachineryProfile[]>([]);
   const [filteredMachinery, setFilteredMachinery] = useState<MachineryProfile[]>([]);
   const [searchLocation, setSearchLocation] = useState("");
-  const [selectedType, setSelectedType] = useState("");
+  const [selectedType, setSelectedType] = useState("all");
   const [maxRate, setMaxRate] = useState("");
   const [rentalType, setRentalType] = useState<"hourly" | "daily">("daily");
   const [isLoading, setIsLoading] = useState(true);
@@ -101,7 +101,7 @@ export const MachineryRental = () => {
       );
     }
 
-    if (selectedType) {
+    if (selectedType && selectedType !== "all") {
       filtered = filtered.filter(machine => 
         machine.machinery_type === selectedType
       );
@@ -186,7 +186,7 @@ export const MachineryRental = () => {
                   <SelectValue placeholder="Select type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Types</SelectItem>
+                  <SelectItem value="all">All Types</SelectItem>
                   {Object.entries(machineryTypes).map(([key, value]) => (
                     <SelectItem key={key} value={key}>{value}</SelectItem>
                   ))}
@@ -219,7 +219,7 @@ export const MachineryRental = () => {
               <Button 
                 onClick={() => {
                   setSearchLocation("");
-                  setSelectedType("");
+                  setSelectedType("all");
                   setMaxRate("");
                 }}
                 variant="outline"

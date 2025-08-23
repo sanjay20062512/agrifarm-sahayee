@@ -53,7 +53,7 @@ export const LaborHiring = () => {
   const [laborers, setLaborers] = useState<LaborProfile[]>([]);
   const [filteredLaborers, setFilteredLaborers] = useState<LaborProfile[]>([]);
   const [searchLocation, setSearchLocation] = useState("");
-  const [selectedSkill, setSelectedSkill] = useState("");
+  const [selectedSkill, setSelectedSkill] = useState("all");
   const [maxWage, setMaxWage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
@@ -93,7 +93,7 @@ export const LaborHiring = () => {
       );
     }
 
-    if (selectedSkill) {
+    if (selectedSkill && selectedSkill !== "all") {
       filtered = filtered.filter(laborer => 
         laborer.skills.includes(selectedSkill)
       );
@@ -177,7 +177,7 @@ export const LaborHiring = () => {
                   <SelectValue placeholder="Select skill" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Skills</SelectItem>
+                  <SelectItem value="all">All Skills</SelectItem>
                   {Object.entries(skillTranslations).map(([key, value]) => (
                     <SelectItem key={key} value={key}>{value}</SelectItem>
                   ))}
@@ -198,7 +198,7 @@ export const LaborHiring = () => {
               <Button 
                 onClick={() => {
                   setSearchLocation("");
-                  setSelectedSkill("");
+                  setSelectedSkill("all");
                   setMaxWage("");
                 }}
                 variant="outline"
