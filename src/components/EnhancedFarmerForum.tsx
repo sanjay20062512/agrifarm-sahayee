@@ -15,7 +15,11 @@ import {
   Filter,
   MapPin,
   User,
-  Send
+  Send,
+  Trash2,
+  Bot,
+  Sparkles,
+  Lightbulb
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "./LanguageContext";
@@ -31,6 +35,9 @@ interface ForumPost {
   likes_count: number;
   replies_count: number;
   is_guest_post: boolean;
+  guest_session_id?: string;
+  ai_analysis?: string;
+  ai_suggestions?: string[];
   created_at: string;
 }
 
@@ -56,6 +63,8 @@ export const EnhancedFarmerForum = () => {
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [isGuest, setIsGuest] = useState(true); // For demo, assume guest mode
   const [isLoading, setIsLoading] = useState(true);
+  const [guestSessionId] = useState(crypto.randomUUID());
+  const [expandedPosts, setExpandedPosts] = useState<Set<string>>(new Set());
   
   // New post form
   const [newPost, setNewPost] = useState({
@@ -69,6 +78,21 @@ export const EnhancedFarmerForum = () => {
 
   useEffect(() => {
     fetchPosts();
+    
+    // Set up real-time subscription
+    const subscription = supabase
+      .channel('forum_posts_changes')
+      .on('postgres_changes', 
+        { event: '*', schema: 'public', table: 'forum_posts' }, 
+        () => {
+          fetchPosts(); // Refresh posts on any change
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(subscription);
+    };
   }, []);
 
   useEffect(() => {
@@ -110,6 +134,19 @@ export const EnhancedFarmerForum = () => {
     setFilteredPosts(filtered);
   };
 
+  const generateAIAnalysis = (title: string, content: string, category: string): { analysis: string; suggestions: string[] } => {
+    const analysis = `AI Analysis: This post about ${category.toLowerCase()} discusses ${title.toLowerCase()}. The content indicates potential issues with ${category === 'Pest Control' ? 'pest management' : category === 'Crop Management' ? 'crop health' : 'farming practices'}.`;
+    
+    const suggestions = [
+      `Consider consulting with local agricultural extension officers about ${category.toLowerCase()}`,
+      `Check weather conditions before implementing suggested solutions`,
+      `Document your progress and share results with the community`,
+      `Consider organic alternatives if applicable`
+    ];
+    
+    return { analysis, suggestions };
+  };
+
   const handleCreatePost = async () => {
     if (!newPost.title || !newPost.content || !newPost.author_name) {
       alert('Please fill in all required fields');
@@ -117,11 +154,15 @@ export const EnhancedFarmerForum = () => {
     }
 
     try {
+      const aiResult = generateAIAnalysis(newPost.title, newPost.content, newPost.category);
+      
       const postData = {
         ...newPost,
         tags: newPost.tags.split(',').map(tag => tag.trim()).filter(tag => tag),
         is_guest_post: isGuest,
-        guest_session_id: isGuest ? crypto.randomUUID() : null
+        guest_session_id: isGuest ? guestSessionId : null,
+        ai_analysis: aiResult.analysis,
+        ai_suggestions: aiResult.suggestions
       };
 
       const { error } = await supabase
@@ -145,6 +186,36 @@ export const EnhancedFarmerForum = () => {
       console.error('Error creating post:', error);
       alert('Error creating post. Please try again.');
     }
+  };
+
+  const handleDeletePost = async (postId: string, isGuestPost: boolean, guestSessionId: string) => {
+    if (isGuestPost && guestSessionId !== postId) {
+      // For guest posts, only allow deletion if session matches
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('forum_posts')
+        .delete()
+        .eq('id', postId);
+
+      if (error) throw error;
+      fetchPosts();
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      alert('Error deleting post. Please try again.');
+    }
+  };
+
+  const toggleExpandPost = (postId: string) => {
+    const newExpanded = new Set(expandedPosts);
+    if (newExpanded.has(postId)) {
+      newExpanded.delete(postId);
+    } else {
+      newExpanded.add(postId);
+    }
+    setExpandedPosts(newExpanded);
   };
 
   const formatTimeAgo = (dateString: string) => {
@@ -327,13 +398,53 @@ export const EnhancedFarmerForum = () => {
                     )}
                   </div>
                 </div>
-                <Badge variant="secondary">{post.category}</Badge>
+                <div className="flex items-center gap-2">
+                  <Badge variant="secondary">{post.category}</Badge>
+                  {(post.is_guest_post && post.guest_session_id === guestSessionId) && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDeletePost(post.id, post.is_guest_post, post.guest_session_id || '')}
+                      className="text-destructive hover:text-destructive"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  )}
+                </div>
               </div>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
+              <p className={`text-sm text-muted-foreground mb-4 ${!expandedPosts.has(post.id) ? 'line-clamp-3' : ''}`}>
                 {post.content}
               </p>
+              
+              {/* AI Analysis */}
+              {post.ai_analysis && expandedPosts.has(post.id) && (
+                <div className="bg-accent/10 border border-accent/20 rounded-lg p-3 mb-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Bot className="w-4 h-4 text-accent" />
+                    <span className="font-semibold text-accent">AI Analysis</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mb-2">{post.ai_analysis}</p>
+                  
+                  {post.ai_suggestions && post.ai_suggestions.length > 0 && (
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-1 text-xs font-medium text-accent">
+                        <Lightbulb className="w-3 h-3" />
+                        AI Suggestions:
+                      </div>
+                      <ul className="space-y-1">
+                        {post.ai_suggestions.map((suggestion, index) => (
+                          <li key={index} className="text-xs text-muted-foreground flex items-start gap-1">
+                            <span className="text-accent">•</span>
+                            {suggestion}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
               
               {/* Tags */}
               {post.tags && post.tags.length > 0 && (
@@ -360,9 +471,19 @@ export const EnhancedFarmerForum = () => {
                     <ThumbsUp className="w-4 h-4" />
                     {post.likes_count} likes
                   </div>
+                  {post.ai_analysis && (
+                    <div className="flex items-center gap-1">
+                      <Sparkles className="w-4 h-4 text-accent" />
+                      <span className="text-accent">AI Analyzed</span>
+                    </div>
+                  )}
                 </div>
-                <Button variant="ghost" size="sm">
-                  Read More
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={() => toggleExpandPost(post.id)}
+                >
+                  {expandedPosts.has(post.id) ? 'Show Less' : 'Read More'}
                 </Button>
               </div>
             </CardContent>

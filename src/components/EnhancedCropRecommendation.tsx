@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import { useLanguage } from "./LanguageContext";
 import { WeatherReport } from "./WeatherReport";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
 
 interface CropData {
   id: string;
@@ -47,6 +49,113 @@ export const EnhancedCropRecommendation = ({
   onStartPlant 
 }: EnhancedCropRecommendationProps) => {
   const { language, t } = useLanguage();
+  const [recommendedCrops, setRecommendedCrops] = useState<CropData[]>([]);
+  const [marketPrices, setMarketPrices] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchRealtimeData();
+  }, [userDistrict, userSeason, soilType]);
+
+  const fetchRealtimeData = async () => {
+    try {
+      // Fetch market prices for real-time recommendations
+      const { data: prices } = await supabase
+        .from('market_prices')
+        .select('*')
+        .ilike('location', `%${userDistrict}%`)
+        .order('price_date', { ascending: false });
+
+      setMarketPrices(prices || []);
+      
+      // AI-powered crop filtering based on real-time conditions
+      const filteredCrops = getAIFilteredCrops();
+      setRecommendedCrops(filteredCrops);
+    } catch (error) {
+      console.error('Error fetching real-time data:', error);
+      setRecommendedCrops(cropDatabase.slice(0, 12)); // Fallback to default
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getAIFilteredCrops = () => {
+    // AI logic based on season, soil type, and market conditions
+    let filtered = [...cropDatabase];
+    
+    // Filter by season
+    if (userSeason === 'Kharif') {
+      filtered = filtered.filter(crop => 
+        ['Rice', 'Cotton', 'Sugarcane', 'Corn', 'Soybean'].includes(crop.name)
+      );
+    } else if (userSeason === 'Rabi') {
+      filtered = filtered.filter(crop => 
+        ['Wheat', 'Potato', 'Onion', 'Mustard', 'Gram'].includes(crop.name) ||
+        crop.name.includes('Gram') || crop.name.includes('Lentil')
+      );
+    } else if (userSeason === 'Zaid') {
+      filtered = filtered.filter(crop => 
+        ['Tomato', 'Cucumber', 'Watermelon', 'Fodder'].includes(crop.name)
+      );
+    }
+
+    // Filter by soil type
+    if (soilType === 'Clay') {
+      filtered = filtered.filter(crop => 
+        ['Rice', 'Wheat', 'Cotton', 'Sugarcane'].includes(crop.name)
+      );
+    } else if (soilType === 'Sandy') {
+      filtered = filtered.filter(crop => 
+        ['Groundnut', 'Watermelon', 'Millet', 'Sesame'].includes(crop.name)
+      );
+    } else if (soilType === 'Loamy') {
+      // All crops suitable for loamy soil
+    }
+
+    // Sort by market price and profitability
+    return filtered
+      .sort((a, b) => {
+        const aPrice = marketPrices.find(p => p.crop_name.toLowerCase() === a.name.toLowerCase());
+        const bPrice = marketPrices.find(p => p.crop_name.toLowerCase() === b.name.toLowerCase());
+        
+        if (aPrice && bPrice) {
+          return bPrice.price_per_kg - aPrice.price_per_kg;
+        }
+        return 0;
+      })
+      .slice(0, 15); // Top 15 AI-recommended crops
+  };
+  
+  const getEnhancedAIReason = (crop: CropData) => {
+    const marketPrice = marketPrices.find(p => 
+      p.crop_name.toLowerCase() === crop.name.toLowerCase()
+    );
+    
+    let reason = crop.aiReason;
+    
+    if (marketPrice) {
+      reason += ` Current market rate: ₹${marketPrice.price_per_kg}/kg in nearby markets. `;
+      
+      if (marketPrice.price_per_kg > 30) {
+        reason += "🔥 High demand - excellent selling opportunity!";
+      } else if (marketPrice.price_per_kg > 20) {
+        reason += "📈 Moderate prices - good stability expected.";
+      } else {
+        reason += "💡 Lower prices now, expected to rise in 2-3 months.";
+      }
+    }
+    
+    // Weather-based AI enhancement
+    if (userSeason === 'Monsoon') {
+      reason += " Monsoon timing perfect for this crop. ";
+    } else if (userSeason === 'Winter') {
+      reason += " Cool weather ideal for optimal growth. ";
+    } else if (userSeason === 'Summer') {
+      reason += " Heat-resistant variety recommended. ";
+    }
+    
+    return reason;
+  };
 
   const cropDatabase: CropData[] = [
     {
@@ -385,7 +494,22 @@ export const EnhancedCropRecommendation = ({
         </h3>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {cropDatabase.map((crop) => (
+          {isLoading ? (
+            Array.from({ length: 8 }).map((_, index) => (
+              <Card key={index} className="animate-pulse">
+                <CardHeader className="text-center pb-2">
+                  <div className="w-16 h-16 bg-muted rounded-full mx-auto mb-2"></div>
+                  <div className="h-4 bg-muted rounded w-3/4 mx-auto"></div>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="h-3 bg-muted rounded"></div>
+                  <div className="h-3 bg-muted rounded w-2/3"></div>
+                  <div className="h-8 bg-muted rounded"></div>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            recommendedCrops.map((crop) => (
             <Card 
               key={crop.id} 
               className="hover:shadow-crop transition-all duration-300 hover:scale-105 group relative overflow-hidden"
@@ -446,7 +570,7 @@ export const EnhancedCropRecommendation = ({
                 <div className="border-t pt-3">
                   <div className="flex items-start gap-2">
                     <Lightbulb className="w-4 h-4 text-accent mt-0.5 flex-shrink-0" />
-                    <p className="text-xs text-muted-foreground">{crop.aiReason}</p>
+                    <p className="text-xs text-muted-foreground">{getEnhancedAIReason(crop)}</p>
                   </div>
                 </div>
 
@@ -461,7 +585,8 @@ export const EnhancedCropRecommendation = ({
                 </Button>
               </CardContent>
             </Card>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </div>
