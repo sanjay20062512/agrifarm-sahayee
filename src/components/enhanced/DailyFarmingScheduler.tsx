@@ -197,7 +197,7 @@ export const DailyFarmingScheduler = ({
       
       const schedules = data?.map(item => ({
         ...item,
-        schedule_data: Array.isArray(item.schedule_data) ? item.schedule_data as DaySchedule[] : []
+        schedule_data: Array.isArray(item.schedule_data) ? item.schedule_data as unknown as DaySchedule[] : []
       })) || [];
       
       setSavedSchedules(schedules);
