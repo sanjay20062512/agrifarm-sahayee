@@ -188,8 +188,8 @@ export const EnhancedFarmerForum = () => {
     }
   };
 
-  const handleDeletePost = async (postId: string, isGuestPost: boolean, guestSessionId: string) => {
-    if (isGuestPost && guestSessionId !== postId) {
+  const handleDeletePost = async (postId: string, isGuestPost: boolean, postGuestSessionId?: string) => {
+    if (isGuestPost && postGuestSessionId !== guestSessionId) {
       // For guest posts, only allow deletion if session matches
       return;
     }
@@ -242,10 +242,10 @@ export const EnhancedFarmerForum = () => {
       <div className="text-center space-y-2">
         <h2 className="text-3xl font-bold text-foreground flex items-center justify-center gap-2">
           <Users className="w-8 h-8 text-primary" />
-          {t("nav.farmer-forum")}
+          {t("forum.title")}
         </h2>
         <p className="text-muted-foreground">
-          Connect with farmers across India, share knowledge and get advice
+          {t("forum.description")}
         </p>
       </div>
 
@@ -257,7 +257,7 @@ export const EnhancedFarmerForum = () => {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                 <Input
-                  placeholder="Search posts..."
+                  placeholder={t("forum.search")}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
@@ -280,7 +280,7 @@ export const EnhancedFarmerForum = () => {
             </div>
             <Button onClick={() => setShowCreatePost(true)}>
               <Plus className="w-4 h-4 mr-2" />
-              New Post
+              {t("forum.new-post")}
             </Button>
           </div>
         </CardContent>
@@ -290,43 +290,43 @@ export const EnhancedFarmerForum = () => {
       {showCreatePost && (
         <Card>
           <CardHeader>
-            <CardTitle>Create New Post</CardTitle>
-            <CardDescription>Share your farming experience or ask questions</CardDescription>
+            <CardTitle>{t("forum.create-title")}</CardTitle>
+            <CardDescription>{t("forum.create-description")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium">Your Name *</label>
+                <label className="text-sm font-medium">{t("forum.your-name")} *</label>
                 <Input
                   value={newPost.author_name}
                   onChange={(e) => setNewPost({...newPost, author_name: e.target.value})}
-                  placeholder="Enter your name"
+                  placeholder={t("forum.your-name")}
                 />
               </div>
               <div>
-                <label className="text-sm font-medium">Location</label>
+                <label className="text-sm font-medium">{t("forum.location")}</label>
                 <Input
                   value={newPost.author_location}
                   onChange={(e) => setNewPost({...newPost, author_location: e.target.value})}
-                  placeholder="City, State"
+                  placeholder={t("forum.location")}
                 />
               </div>
             </div>
             
             <div>
-              <label className="text-sm font-medium">Title *</label>
+              <label className="text-sm font-medium">{t("forum.title-label")} *</label>
               <Input
                 value={newPost.title}
                 onChange={(e) => setNewPost({...newPost, title: e.target.value})}
-                placeholder="What's your question or topic?"
+                placeholder={t("forum.title-label")}
               />
             </div>
 
             <div>
-              <label className="text-sm font-medium">Category</label>
+              <label className="text-sm font-medium">{t("forum.category")}</label>
               <Select value={newPost.category} onValueChange={(value) => setNewPost({...newPost, category: value})}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select category" />
+                  <SelectValue placeholder={t("forum.category")} />
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map((category) => (
@@ -337,31 +337,31 @@ export const EnhancedFarmerForum = () => {
             </div>
 
             <div>
-              <label className="text-sm font-medium">Content *</label>
+              <label className="text-sm font-medium">{t("forum.content")} *</label>
               <Textarea
                 value={newPost.content}
                 onChange={(e) => setNewPost({...newPost, content: e.target.value})}
-                placeholder="Share your thoughts, experience, or ask your question in detail..."
+                placeholder={t("forum.content")}
                 rows={4}
               />
             </div>
 
             <div>
-              <label className="text-sm font-medium">Tags (comma separated)</label>
+              <label className="text-sm font-medium">{t("forum.tags")}</label>
               <Input
                 value={newPost.tags}
                 onChange={(e) => setNewPost({...newPost, tags: e.target.value})}
-                placeholder="e.g., rice, irrigation, pest control"
+                placeholder={t("forum.tags")}
               />
             </div>
 
             <div className="flex gap-2">
               <Button onClick={handleCreatePost}>
                 <Send className="w-4 h-4 mr-2" />
-                Post
+                {t("forum.post-button")}
               </Button>
               <Button variant="outline" onClick={() => setShowCreatePost(false)}>
-                Cancel
+                {t("forum.cancel")}
               </Button>
             </div>
           </CardContent>
@@ -404,7 +404,7 @@ export const EnhancedFarmerForum = () => {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => handleDeletePost(post.id, post.is_guest_post, post.guest_session_id || '')}
+                      onClick={() => handleDeletePost(post.id, post.is_guest_post, post.guest_session_id)}
                       className="text-destructive hover:text-destructive"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -423,7 +423,7 @@ export const EnhancedFarmerForum = () => {
                 <div className="bg-accent/10 border border-accent/20 rounded-lg p-3 mb-4">
                   <div className="flex items-center gap-2 mb-2">
                     <Bot className="w-4 h-4 text-accent" />
-                    <span className="font-semibold text-accent">AI Analysis</span>
+                    <span className="font-semibold text-accent">{t("forum.ai-analysis")}</span>
                   </div>
                   <p className="text-xs text-muted-foreground mb-2">{post.ai_analysis}</p>
                   
@@ -431,7 +431,7 @@ export const EnhancedFarmerForum = () => {
                     <div className="space-y-1">
                       <div className="flex items-center gap-1 text-xs font-medium text-accent">
                         <Lightbulb className="w-3 h-3" />
-                        AI Suggestions:
+                        {t("forum.ai-suggestions")}
                       </div>
                       <ul className="space-y-1">
                         {post.ai_suggestions.map((suggestion, index) => (
@@ -465,16 +465,16 @@ export const EnhancedFarmerForum = () => {
                   </div>
                   <div className="flex items-center gap-1">
                     <MessageCircle className="w-4 h-4" />
-                    {post.replies_count} replies
+                    {post.replies_count} {t("forum.replies")}
                   </div>
                   <div className="flex items-center gap-1">
                     <ThumbsUp className="w-4 h-4" />
-                    {post.likes_count} likes
+                    {post.likes_count} {t("forum.likes")}
                   </div>
                   {post.ai_analysis && (
                     <div className="flex items-center gap-1">
                       <Sparkles className="w-4 h-4 text-accent" />
-                      <span className="text-accent">AI Analyzed</span>
+                      <span className="text-accent">{t("forum.ai-analyzed")}</span>
                     </div>
                   )}
                 </div>
@@ -483,7 +483,7 @@ export const EnhancedFarmerForum = () => {
                   size="sm"
                   onClick={() => toggleExpandPost(post.id)}
                 >
-                  {expandedPosts.has(post.id) ? 'Show Less' : 'Read More'}
+                  {expandedPosts.has(post.id) ? t("forum.show-less") : t("forum.read-more")}
                 </Button>
               </div>
             </CardContent>
@@ -494,11 +494,11 @@ export const EnhancedFarmerForum = () => {
       {filteredPosts.length === 0 && (
         <div className="text-center py-12">
           <MessageCircle className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-xl font-semibold text-foreground mb-2">No posts found</h3>
+          <h3 className="text-xl font-semibold text-foreground mb-2">{t("forum.no-posts")}</h3>
           <p className="text-muted-foreground">
             {searchTerm || selectedCategory 
-              ? "Try adjusting your search criteria"
-              : "Be the first to start a conversation!"
+              ? t("forum.no-posts")
+              : t("forum.no-posts")
             }
           </p>
         </div>

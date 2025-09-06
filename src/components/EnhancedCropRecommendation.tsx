@@ -15,6 +15,7 @@ import { useLanguage } from "./LanguageContext";
 import { WeatherReport } from "./WeatherReport";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
+import { getClimateData, getCropSuitabilityScore } from "@/data/stateDistrictClimate";
 
 interface CropData {
   id: string;
@@ -80,36 +81,55 @@ export const EnhancedCropRecommendation = ({
   };
 
   const getAIFilteredCrops = () => {
-    // AI logic based on season, soil type, and market conditions
+    // Get climate data for the specific district
+    const climateData = getClimateData(userState, userDistrict);
+    
+    // AI logic based on district climate, season, soil type, and market conditions
     let filtered = [...cropDatabase];
     
-    // Filter by season
-    if (userSeason === 'Kharif') {
-      filtered = filtered.filter(crop => 
-        ['Rice', 'Cotton', 'Sugarcane', 'Corn', 'Soybean'].includes(crop.name)
-      );
-    } else if (userSeason === 'Rabi') {
-      filtered = filtered.filter(crop => 
-        ['Wheat', 'Potato', 'Onion', 'Mustard', 'Gram'].includes(crop.name) ||
-        crop.name.includes('Gram') || crop.name.includes('Lentil')
-      );
-    } else if (userSeason === 'Zaid') {
-      filtered = filtered.filter(crop => 
-        ['Tomato', 'Cucumber', 'Watermelon', 'Fodder'].includes(crop.name)
-      );
-    }
+    if (climateData) {
+      // Advanced climate-based filtering with suitability scores
+      filtered = filtered
+        .map(crop => ({
+          ...crop,
+          suitabilityScore: getCropSuitabilityScore(crop.name, climateData, soilType, userSeason)
+        }))
+        .filter(crop => crop.suitabilityScore >= 30) // Only include crops with good suitability
+        .sort((a, b) => b.suitabilityScore - a.suitabilityScore);
+    } else {
+      // Fallback to basic season and soil filtering
+      if (userSeason === 'Kharif' || userSeason === 'Monsoon') {
+        filtered = filtered.filter(crop => 
+          ['Rice', 'Cotton', 'Sugarcane', 'Corn', 'Soybean', 'Chili', 'Turmeric'].includes(crop.name)
+        );
+      } else if (userSeason === 'Rabi' || userSeason === 'Winter') {
+        filtered = filtered.filter(crop => 
+          ['Wheat', 'Potato', 'Onion', 'Mustard', 'Black Gram', 'Green Gram', 'Cauliflower', 'Cabbage'].includes(crop.name)
+        );
+      } else if (userSeason === 'Zaid' || userSeason === 'Summer') {
+        filtered = filtered.filter(crop => 
+          ['Tomato', 'Cucumber', 'Watermelon', 'Groundnut', 'Sesame'].includes(crop.name)
+        );
+      }
 
-    // Filter by soil type
-    if (soilType === 'Clay') {
-      filtered = filtered.filter(crop => 
-        ['Rice', 'Wheat', 'Cotton', 'Sugarcane'].includes(crop.name)
-      );
-    } else if (soilType === 'Sandy') {
-      filtered = filtered.filter(crop => 
-        ['Groundnut', 'Watermelon', 'Millet', 'Sesame'].includes(crop.name)
-      );
-    } else if (soilType === 'Loamy') {
-      // All crops suitable for loamy soil
+      // Soil type filtering
+      if (soilType === 'Clay') {
+        filtered = filtered.filter(crop => 
+          ['Rice', 'Wheat', 'Cotton', 'Sugarcane'].includes(crop.name)
+        );
+      } else if (soilType === 'Sandy') {
+        filtered = filtered.filter(crop => 
+          ['Groundnut', 'Watermelon', 'Sesame', 'Green Gram'].includes(crop.name)
+        );
+      } else if (soilType === 'Red') {
+        filtered = filtered.filter(crop => 
+          ['Cotton', 'Groundnut', 'Turmeric', 'Chili', 'Mango'].includes(crop.name)
+        );
+      } else if (soilType === 'Black') {
+        filtered = filtered.filter(crop => 
+          ['Cotton', 'Sugarcane', 'Wheat', 'Gram', 'Soybean'].includes(crop.name)
+        );
+      }
     }
 
     // Sort by market price and profitability
@@ -121,37 +141,71 @@ export const EnhancedCropRecommendation = ({
         if (aPrice && bPrice) {
           return bPrice.price_per_kg - aPrice.price_per_kg;
         }
-        return 0;
+        
+        // If no market price data, sort by suitability score (if available)
+        const aScore = (a as any).suitabilityScore || 50;
+        const bScore = (b as any).suitabilityScore || 50;
+        return bScore - aScore;
       })
       .slice(0, 15); // Top 15 AI-recommended crops
   };
   
   const getEnhancedAIReason = (crop: CropData) => {
+    const climateData = getClimateData(userState, userDistrict);
     const marketPrice = marketPrices.find(p => 
       p.crop_name.toLowerCase() === crop.name.toLowerCase()
     );
     
     let reason = crop.aiReason;
     
-    if (marketPrice) {
-      reason += ` Current market rate: ₹${marketPrice.price_per_kg}/kg in nearby markets. `;
+    // Climate-specific recommendations
+    if (climateData) {
+      const suitabilityScore = getCropSuitabilityScore(crop.name, climateData, soilType, userSeason);
       
-      if (marketPrice.price_per_kg > 30) {
-        reason += "🔥 High demand - excellent selling opportunity!";
-      } else if (marketPrice.price_per_kg > 20) {
-        reason += "📈 Moderate prices - good stability expected.";
-      } else {
-        reason += "💡 Lower prices now, expected to rise in 2-3 months.";
+      if (suitabilityScore >= 80) {
+        reason += ` 🌟 Excellent climate match for ${userDistrict} district (${suitabilityScore}% suitability). `;
+      } else if (suitabilityScore >= 60) {
+        reason += ` ✅ Good climate compatibility for your region (${suitabilityScore}% suitability). `;
+      } else if (suitabilityScore >= 40) {
+        reason += ` ⚠️ Moderate suitability (${suitabilityScore}%) - requires careful management. `;
+      }
+      
+      // Temperature advice
+      if (climateData.temperature.optimal < 25) {
+        reason += "Cool climate varieties recommended. ";
+      } else if (climateData.temperature.optimal > 30) {
+        reason += "Heat-tolerant varieties essential. ";
+      }
+      
+      // Rainfall advice
+      if (climateData.rainfall.annual > 1000) {
+        reason += "High rainfall region - ensure good drainage. ";
+      } else if (climateData.rainfall.annual < 600) {
+        reason += "Low rainfall area - drought-resistant varieties preferred. ";
       }
     }
     
-    // Weather-based AI enhancement
-    if (userSeason === 'Monsoon') {
-      reason += " Monsoon timing perfect for this crop. ";
-    } else if (userSeason === 'Winter') {
-      reason += " Cool weather ideal for optimal growth. ";
-    } else if (userSeason === 'Summer') {
-      reason += " Heat-resistant variety recommended. ";
+    // Market intelligence
+    if (marketPrice) {
+      const daysOld = Math.floor((Date.now() - new Date(marketPrice.updated_at).getTime()) / (1000 * 60 * 60 * 24));
+      reason += ` 💰 Live market rate: ₹${marketPrice.price_per_kg}/kg in ${marketPrice.location} (${daysOld} days ago). `;
+      
+      if (marketPrice.price_per_kg > 40) {
+        reason += "🔥 Premium prices - exceptional profit potential!";
+      } else if (marketPrice.price_per_kg > 25) {
+        reason += "📈 Good market rates - stable returns expected.";
+      } else {
+        reason += "💡 Current prices moderate - seasonal increase expected.";
+      }
+    }
+    
+    // Season-specific advice
+    if (userSeason === 'Kharif' || userSeason === 'Monsoon') {
+      reason += " 🌧️ Monsoon crop - timing aligns with rainfall pattern. ";
+    } else if (userSeason === 'Rabi' || userSeason === 'Winter') {
+      reason += " ❄️ Winter crop - cooler temperatures boost quality. ";
+    } else if (userSeason === 'Zaid' || userSeason === 'Summer') {
+      reason += " ☀️ Summer crop - ensure adequate irrigation. ";
     }
     
     return reason;
