@@ -11,8 +11,8 @@ import { AIAssistance } from "@/components/AIAssistance";
 import { DiseaseDetector } from "@/components/DiseaseDetector";
 import { GovernmentSchemes } from "@/components/GovernmentSchemes";
 import { SchemeDetails } from "@/components/SchemeDetails";
-import { LaborHiring } from "@/components/LaborHiring";
-import { MachineryRental } from "@/components/MachineryRental";
+import { EnhancedLaborHiring } from "@/components/enhanced/EnhancedLaborHiring";
+import { EnhancedMachineryRental } from "@/components/enhanced/EnhancedMachineryRental";
 import { LanguageProvider } from "@/components/LanguageContext";
 
 interface FormData {
@@ -142,13 +142,13 @@ const Index = () => {
       case "labor-hiring":
         return (
           <div className="container mx-auto px-4 py-8">
-            <LaborHiring />
+            <EnhancedLaborHiring />
           </div>
         );
       case "machinery-rental":
         return (
           <div className="container mx-auto px-4 py-8">
-            <MachineryRental />
+            <EnhancedMachineryRental />
           </div>
         );
       default:

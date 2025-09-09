@@ -134,17 +134,20 @@ export const EnhancedFarmerForum = () => {
     setFilteredPosts(filtered);
   };
 
-  const generateAIAnalysis = (title: string, content: string, category: string): { analysis: string; suggestions: string[] } => {
-    const analysis = `AI Analysis: This post about ${category.toLowerCase()} discusses ${title.toLowerCase()}. The content indicates potential issues with ${category === 'Pest Control' ? 'pest management' : category === 'Crop Management' ? 'crop health' : 'farming practices'}.`;
-    
-    const suggestions = [
-      `Consider consulting with local agricultural extension officers about ${category.toLowerCase()}`,
-      `Check weather conditions before implementing suggested solutions`,
-      `Document your progress and share results with the community`,
-      `Consider organic alternatives if applicable`
-    ];
-    
-    return { analysis, suggestions };
+  // AI analysis function using edge function
+  const triggerAIAnalysis = async (postId: string, title: string, content: string, category: string) => {
+    try {
+      await supabase.functions.invoke('analyze-forum-post', {
+        body: {
+          postId,
+          title,
+          content,
+          category
+        }
+      });
+    } catch (error) {
+      console.error('Error triggering AI analysis:', error);
+    }
   };
 
   const handleCreatePost = async () => {
@@ -154,22 +157,25 @@ export const EnhancedFarmerForum = () => {
     }
 
     try {
-      const aiResult = generateAIAnalysis(newPost.title, newPost.content, newPost.category);
-      
       const postData = {
         ...newPost,
         tags: newPost.tags.split(',').map(tag => tag.trim()).filter(tag => tag),
         is_guest_post: isGuest,
-        guest_session_id: isGuest ? guestSessionId : null,
-        ai_analysis: aiResult.analysis,
-        ai_suggestions: aiResult.suggestions
+        guest_session_id: isGuest ? guestSessionId : null
       };
 
-      const { error } = await supabase
+      const { data: insertedPost, error } = await supabase
         .from('forum_posts')
-        .insert([postData]);
+        .insert([postData])
+        .select()
+        .single();
 
       if (error) throw error;
+
+      // Trigger AI analysis for the new post
+      if (insertedPost) {
+        triggerAIAnalysis(insertedPost.id, insertedPost.title, insertedPost.content, insertedPost.category);
+      }
 
       // Reset form and refresh posts
       setNewPost({
