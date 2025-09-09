@@ -61,6 +61,8 @@ export type Database = {
       }
       forum_posts: {
         Row: {
+          ai_analysis: string | null
+          ai_suggestions: string[] | null
           author_id: string | null
           author_location: string
           author_name: string
@@ -78,6 +80,8 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          ai_analysis?: string | null
+          ai_suggestions?: string[] | null
           author_id?: string | null
           author_location: string
           author_name: string
@@ -95,6 +99,8 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          ai_analysis?: string | null
+          ai_suggestions?: string[] | null
           author_id?: string | null
           author_location?: string
           author_name?: string
