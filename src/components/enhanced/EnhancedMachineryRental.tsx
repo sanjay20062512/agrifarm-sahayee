@@ -247,6 +247,15 @@ export const EnhancedMachineryRental = () => {
   };
 
   const createMachineryListing = async () => {
+    if (!listingFormData.owner_name || !listingFormData.owner_phone || !listingFormData.machinery_type || !listingFormData.brand || !listingFormData.model) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields including machinery details.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     try {
       const { data, error } = await supabase
         .from('machinery_listings')
@@ -294,6 +303,15 @@ export const EnhancedMachineryRental = () => {
   };
 
   const createMachineryRequirement = async () => {
+    if (!requirementFormData.farmer_name || !requirementFormData.farmer_phone || !requirementFormData.required_machinery_type || !requirementFormData.required_date) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields including required date.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     try {
       const { data, error } = await supabase
         .from('machinery_requirements')
@@ -1052,11 +1070,12 @@ export const EnhancedMachineryRental = () => {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Required Date</label>
+                  <label className="text-sm font-medium">Required Date *</label>
                   <Input
                     type="date"
                     value={requirementFormData.required_date}
                     onChange={(e) => setRequirementFormData({...requirementFormData, required_date: e.target.value})}
+                    required
                   />
                 </div>
                 <div>

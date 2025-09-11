@@ -197,8 +197,12 @@ export const EnhancedFarmerForum = () => {
   const handleDeletePost = async (postId: string, isGuestPost: boolean, postGuestSessionId?: string) => {
     if (isGuestPost && postGuestSessionId !== guestSessionId) {
       // For guest posts, only allow deletion if session matches
+      alert("You can only delete your own posts");
       return;
     }
+
+    const confirmDelete = window.confirm("Are you sure you want to delete this post?");
+    if (!confirmDelete) return;
 
     try {
       const { error } = await supabase
@@ -208,6 +212,7 @@ export const EnhancedFarmerForum = () => {
 
       if (error) throw error;
       fetchPosts();
+      alert("Post deleted successfully");
     } catch (error) {
       console.error('Error deleting post:', error);
       alert('Error deleting post. Please try again.');

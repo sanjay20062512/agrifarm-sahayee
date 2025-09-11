@@ -225,6 +225,15 @@ export const EnhancedLaborHiring = () => {
   };
 
   const createJobProfile = async () => {
+    if (!jobFormData.name || !jobFormData.phone || !jobFormData.location || !jobFormData.skills.length) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields including skills.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     try {
       const { data, error } = await supabase
         .from('job_profiles')
@@ -268,6 +277,15 @@ export const EnhancedLaborHiring = () => {
   };
 
   const createJobRequirement = async () => {
+    if (!requirementFormData.farmer_name || !requirementFormData.farmer_phone || !requirementFormData.job_description || !requirementFormData.start_date) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields including start date.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     try {
       const { data, error } = await supabase
         .from('job_requirements')
@@ -851,6 +869,28 @@ export const EnhancedLaborHiring = () => {
                 </div>
               </div>
               <div>
+                <label className="text-sm font-medium">Skills *</label>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
+                  {Object.entries(skillTranslations).map(([key, value]) => (
+                    <label key={key} className="flex items-center space-x-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={jobFormData.skills.includes(key)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setJobFormData({...jobFormData, skills: [...jobFormData.skills, key]});
+                          } else {
+                            setJobFormData({...jobFormData, skills: jobFormData.skills.filter(s => s !== key)});
+                          }
+                        }}
+                        className="rounded border-gray-300"
+                      />
+                      <span className="text-sm">{value}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              <div>
                 <label className="text-sm font-medium">Specialization</label>
                 <Input
                   value={jobFormData.specialization}
@@ -942,11 +982,12 @@ export const EnhancedLaborHiring = () => {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Start Date</label>
+                  <label className="text-sm font-medium">Start Date *</label>
                   <Input
                     type="date"
                     value={requirementFormData.start_date}
                     onChange={(e) => setRequirementFormData({...requirementFormData, start_date: e.target.value})}
+                    required
                   />
                 </div>
                 <div>
