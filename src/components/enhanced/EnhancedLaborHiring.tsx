@@ -987,6 +987,7 @@ export const EnhancedLaborHiring = () => {
                     type="date"
                     value={requirementFormData.start_date}
                     onChange={(e) => setRequirementFormData({...requirementFormData, start_date: e.target.value})}
+                    min={new Date().toISOString().split('T')[0]}
                     required
                   />
                 </div>

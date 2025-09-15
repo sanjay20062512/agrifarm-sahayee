@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { MessageCircle, Send, Bot, User, Brain, TrendingUp, Clock, MapPin } from "lucide-react";
 import { AgriAITwin } from "./AgriAITwin";
 import { supabase } from "@/integrations/supabase/client";
+import { useLanguage } from "./LanguageContext";
 
 interface Message {
   id: number;
@@ -14,6 +15,7 @@ interface Message {
 }
 
 export const AIAssistance = () => {
+  const { t } = useLanguage();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,

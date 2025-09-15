@@ -195,27 +195,28 @@ export const EnhancedFarmerForum = () => {
   };
 
   const handleDeletePost = async (postId: string, isGuestPost: boolean, postGuestSessionId?: string) => {
-    if (isGuestPost && postGuestSessionId !== guestSessionId) {
-      // For guest posts, only allow deletion if session matches
-      alert("You can only delete your own posts");
-      return;
-    }
-
     const confirmDelete = window.confirm("Are you sure you want to delete this post?");
     if (!confirmDelete) return;
 
     try {
-      const { error } = await supabase
-        .from('forum_posts')
-        .delete()
-        .eq('id', postId);
+      // Use edge function for secure deletion
+      const response = await supabase.functions.invoke('delete-forum-post', {
+        body: {
+          postId,
+          isGuestPost,
+          guestSessionId: guestSessionId
+        }
+      });
 
-      if (error) throw error;
+      if (response.error) {
+        throw new Error(response.error.message || 'Failed to delete post');
+      }
+
       fetchPosts();
       alert("Post deleted successfully");
     } catch (error) {
       console.error('Error deleting post:', error);
-      alert('Error deleting post. Please try again.');
+      alert(error.message || 'Error deleting post. Please try again.');
     }
   };
 
@@ -411,16 +412,15 @@ export const EnhancedFarmerForum = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <Badge variant="secondary">{post.category}</Badge>
-                  {(post.is_guest_post && post.guest_session_id === guestSessionId) && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleDeletePost(post.id, post.is_guest_post, post.guest_session_id)}
-                      className="text-destructive hover:text-destructive"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  )}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleDeletePost(post.id, post.is_guest_post, post.guest_session_id)}
+                    className="text-destructive hover:text-destructive"
+                    title="Delete post"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
                 </div>
               </div>
             </CardHeader>

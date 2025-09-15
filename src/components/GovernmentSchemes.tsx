@@ -2,8 +2,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Building2, ExternalLink, IndianRupee, Calendar, MapPin } from "lucide-react";
+import { useLanguage } from "./LanguageContext";
 
 export const GovernmentSchemes = () => {
+  const { t } = useLanguage();
   const schemes = [
     {
       id: 1,
@@ -255,10 +257,10 @@ export const GovernmentSchemes = () => {
       <div className="text-center space-y-2">
         <h2 className="text-3xl font-bold text-foreground flex items-center justify-center gap-2">
           <Building2 className="w-8 h-8 text-primary" />
-          Government Schemes
+          {t("schemes.title")}
         </h2>
         <p className="text-muted-foreground">
-          Latest subsidies, loans, insurance and support schemes for Indian farmers
+          {t("schemes.description")}
         </p>
       </div>
 
@@ -266,7 +268,7 @@ export const GovernmentSchemes = () => {
       <Card className="mb-6 bg-gradient-to-r from-primary/5 to-accent/5">
         <CardContent className="p-6">
           <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-            🤖 AI-Powered Scheme Recommendations
+            🤖 {t("schemes.ai-recommendations")}
           </h3>
           <p className="text-muted-foreground mb-4">
             Get personalized scheme recommendations based on your location, soil type, and crop selection
@@ -274,17 +276,17 @@ export const GovernmentSchemes = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="text-center p-4 bg-card rounded-lg">
               <div className="text-2xl mb-2">🎯</div>
-              <div className="font-semibold">Personalized Matching</div>
+              <div className="font-semibold">{t("schemes.personalized")}</div>
               <div className="text-sm text-muted-foreground">AI analyzes your farm profile</div>
             </div>
             <div className="text-center p-4 bg-card rounded-lg">
               <div className="text-2xl mb-2">📊</div>
-              <div className="font-semibold">Eligibility Scoring</div>
+              <div className="font-semibold">{t("schemes.eligibility")}</div>
               <div className="text-sm text-muted-foreground">Shows your match percentage</div>
             </div>
             <div className="text-center p-4 bg-card rounded-lg">
               <div className="text-2xl mb-2">⚡</div>
-              <div className="font-semibold">Real-time Updates</div>
+              <div className="font-semibold">{t("schemes.real-time")}</div>
               <div className="text-sm text-muted-foreground">Latest scheme information</div>
             </div>
           </div>
@@ -313,7 +315,7 @@ export const GovernmentSchemes = () => {
             <CardContent className="space-y-3">
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Benefit:</span>
+                  <span className="text-sm text-muted-foreground">{t("schemes.benefit")}:</span>
                   <div className="flex items-center text-success font-semibold">
                     <IndianRupee className="w-3 h-3" />
                     <span className="text-sm">{scheme.benefit}</span>
@@ -321,7 +323,7 @@ export const GovernmentSchemes = () => {
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Deadline:</span>
+                  <span className="text-sm text-muted-foreground">{t("schemes.deadline")}:</span>
                   <div className="flex items-center text-foreground">
                     <Calendar className="w-3 h-3 mr-1" />
                     <span className="text-sm">{scheme.deadline}</span>
@@ -329,7 +331,7 @@ export const GovernmentSchemes = () => {
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Coverage:</span>
+                  <span className="text-sm text-muted-foreground">{t("schemes.coverage")}:</span>
                   <div className="flex items-center text-foreground">
                     <MapPin className="w-3 h-3 mr-1" />
                     <span className="text-sm">{scheme.states}</span>
@@ -338,15 +340,15 @@ export const GovernmentSchemes = () => {
 
                 <div className="border-t pt-2">
                   <div className="text-xs text-muted-foreground space-y-1">
-                    <div><strong>Suitable Crops:</strong> {scheme.crops}</div>
-                    <div><strong>Soil Types:</strong> {scheme.soilTypes}</div>
+                    <div><strong>{t("schemes.crops")}:</strong> {scheme.crops}</div>
+                    <div><strong>{t("schemes.soil-types")}:</strong> {scheme.soilTypes}</div>
                   </div>
                 </div>
               </div>
 
               <div className="border-t pt-3">
                 <p className="text-xs text-muted-foreground mb-2">
-                  <strong>Eligibility:</strong> {scheme.eligibility}
+                  <strong>{t("schemes.eligibility-label")}:</strong> {scheme.eligibility}
                 </p>
               </div>
 
@@ -378,7 +380,7 @@ export const GovernmentSchemes = () => {
                     window.open(url, '_blank');
                   }}
                 >
-                  Apply Now
+                  {t("schemes.apply-now")}
                   <ExternalLink className="w-3 h-3 ml-1" />
                 </Button>
                 <Button 
@@ -392,7 +394,7 @@ export const GovernmentSchemes = () => {
                     window.dispatchEvent(detailsEvent);
                   }}
                 >
-                  Details
+                  {t("schemes.details")}
                 </Button>
               </div>
             </CardContent>
@@ -402,12 +404,12 @@ export const GovernmentSchemes = () => {
 
       <Card className="bg-gradient-earth">
         <CardContent className="p-6 text-center">
-          <h3 className="text-xl font-bold mb-2">Need Help with Applications?</h3>
+          <h3 className="text-xl font-bold mb-2">{t("schemes.help")}</h3>
           <p className="text-muted-foreground mb-4">
-            Contact your local agriculture officer or visit the nearest Common Service Center (CSC)
+            {t("schemes.contact-info")}
           </p>
           <Button variant="nav">
-            Find Nearest CSC
+            {t("schemes.find-csc")}
             <ExternalLink className="w-4 h-4 ml-2" />
           </Button>
         </CardContent>

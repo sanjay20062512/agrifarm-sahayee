@@ -19,3 +19,6 @@ enable_signup = true
 
 [functions.analyze-forum-post]
 verify_jwt = false
+
+[functions.delete-forum-post]
+verify_jwt = false
