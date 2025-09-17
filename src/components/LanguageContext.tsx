@@ -108,7 +108,6 @@ const translations = {
 
     // Machinery Rental
     'machinery.title': 'Machinery Rental',
-    'machinery.description': 'Rent agricultural machinery or list your equipment for rental',
     'machinery.rent-machinery': 'Rent Machinery',
     'machinery.list-machinery': 'List Machinery',
     'machinery.post-requirement': 'Post Requirement',
@@ -326,7 +325,6 @@ const translations = {
 
     // Machinery Rental
     'machinery.title': 'இயந்திர வாடகை',
-    'machinery.description': 'விவசாய இயந்திரங்களை வாடகைக்கு எடுங்கள் அல்லது உங்கள் இயந்திரங்களை வாடகைக்கு விடுங்கள்',
     'machinery.rent-machinery': 'இயந்திரத்தை வாடகைக்கு எடு',
     'machinery.list-machinery': 'இயந்திரத்தை பட்டியலிடு',
     'machinery.post-requirement': 'தேவையை இடுங்கள்',
