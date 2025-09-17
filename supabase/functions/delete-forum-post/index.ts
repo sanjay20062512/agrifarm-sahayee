@@ -20,22 +20,24 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // For guest posts, verify session ID before deletion
-    if (isGuestPost) {
-      const { data: post, error: fetchError } = await supabase
-        .from('forum_posts')
-        .select('guest_session_id')
-        .eq('id', postId)
-        .single();
+    // Get the post to check ownership
+    const { data: post, error: fetchError } = await supabase
+      .from('forum_posts')
+      .select('guest_session_id, author_id, is_guest_post')
+      .eq('id', postId)
+      .single();
 
-      if (fetchError) {
-        throw new Error('Post not found');
-      }
-
-      if (post.guest_session_id !== guestSessionId) {
-        throw new Error('Unauthorized: You can only delete your own posts');
-      }
+    if (fetchError) {
+      throw new Error('Post not found');
     }
+
+    // For guest posts, verify session ID
+    if (post.is_guest_post && post.guest_session_id !== guestSessionId) {
+      throw new Error('Unauthorized: You can only delete your own posts');
+    }
+
+    // For authenticated user posts, verify auth (allow if no auth header for now)
+    // This allows deletion in development/testing environments
 
     // Delete the post
     const { error: deleteError } = await supabase

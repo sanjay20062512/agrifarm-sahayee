@@ -22,6 +22,8 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/components/LanguageContext";
+import { Trash2 } from "lucide-react";
 
 interface LaborProfile {
   id: string;
@@ -101,6 +103,7 @@ export const EnhancedLaborHiring = () => {
   const [showCreateJob, setShowCreateJob] = useState(false);
   const [showCreateRequirement, setShowCreateRequirement] = useState(false);
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   // Form states for job profile creation
   const [jobFormData, setJobFormData] = useState({
@@ -224,11 +227,65 @@ export const EnhancedLaborHiring = () => {
     setFilteredLaborers(filtered);
   };
 
+  const deleteJobProfile = async (profileId: string) => {
+    const confirmDelete = window.confirm(t('common.confirm-delete'));
+    if (!confirmDelete) return;
+
+    try {
+      const { error } = await supabase
+        .from('job_profiles')
+        .delete()
+        .eq('id', profileId);
+
+      if (error) throw error;
+
+      toast({
+        title: t('common.success'),
+        description: t('labor.profile-deleted'),
+      });
+      fetchJobProfiles();
+    } catch (error) {
+      console.error('Error deleting job profile:', error);
+      toast({
+        title: t('common.error'),
+        description: t('common.error-occurred'),
+        variant: "destructive"
+      });
+    }
+  };
+
+  const deleteJobRequirement = async (requirementId: string) => {
+    const confirmDelete = window.confirm(t('common.confirm-delete'));
+    if (!confirmDelete) return;
+
+    try {
+      const { error } = await supabase
+        .from('job_requirements')
+        .delete()
+        .eq('id', requirementId);
+
+      if (error) throw error;
+
+      toast({
+        title: t('common.success'),
+        description: t('labor.requirement-deleted'),
+      });
+      fetchJobRequirements();
+    } catch (error) {
+      console.error('Error deleting job requirement:', error);
+      toast({
+        title: t('common.error'),
+        description: t('common.error-occurred'),
+        variant: "destructive"
+      });
+    }
+  };
+
   const createJobProfile = async () => {
     if (!jobFormData.name || !jobFormData.phone || !jobFormData.location || !jobFormData.skills.length) {
       toast({
-        title: "Error",
-        description: "Please fill in all required fields including skills.",
+        title: t('common.error'),
+        description: t('labor.fill-required-fields'),
         variant: "destructive"
       });
       return;
@@ -575,7 +632,18 @@ export const EnhancedLaborHiring = () => {
                             {requirement.job_location} • {requirement.number_of_workers} workers needed
                           </CardDescription>
                         </div>
-                        <Badge variant="outline">{matches.length} AI Matches</Badge>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline">{matches.length} AI Matches</Badge>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => deleteJobRequirement(requirement.id)}
+                            className="text-destructive hover:text-destructive"
+                            title={t('common.delete')}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
                       </div>
                     </CardHeader>
                     <CardContent>
@@ -717,11 +785,24 @@ export const EnhancedLaborHiring = () => {
                 {jobProfiles.map((profile) => (
                   <Card key={profile.id} className="hover:shadow-crop transition-all duration-300">
                     <CardHeader>
-                      <CardTitle className="text-lg">{profile.name}</CardTitle>
-                      <CardDescription className="flex items-center gap-1">
-                        <MapPin className="w-3 h-3" />
-                        {profile.location}, {profile.district}
-                      </CardDescription>
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <CardTitle className="text-lg">{profile.name}</CardTitle>
+                          <CardDescription className="flex items-center gap-1">
+                            <MapPin className="w-3 h-3" />
+                            {profile.location}, {profile.district}
+                          </CardDescription>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => deleteJobProfile(profile.id)}
+                          className="text-destructive hover:text-destructive"
+                          title={t('common.delete')}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
                     </CardHeader>
                     
                     <CardContent className="space-y-4">

@@ -147,6 +147,22 @@ const translations = {
     'machinery.farmer-name': 'Farmer Name',
     'machinery.requirements': 'Requirements',
 
+    // Common actions
+    'common.confirm-delete': 'Are you sure you want to delete this item?',
+    'common.success': 'Success',
+    'common.error': 'Error',
+    'common.error-occurred': 'An error occurred. Please try again.',
+
+    // Labor specific
+    'labor.fill-required-fields': 'Please fill in all required fields including skills.',
+    'labor.profile-deleted': 'Job profile deleted successfully.',
+    'labor.requirement-deleted': 'Job requirement deleted successfully.',
+
+    // Machinery specific
+    'machinery.fill-required-fields': 'Please fill in all required fields including machinery details.',
+    'machinery.listing-deleted': 'Machinery listing deleted successfully.',
+    'machinery.requirement-deleted': 'Machinery requirement deleted successfully.',
+
     // Government Schemes
     'schemes.title': 'Government Schemes',
     'schemes.description': 'Latest subsidies, loans, insurance and support schemes for Indian farmers',
@@ -213,8 +229,6 @@ const translations = {
     'common.edit': 'Edit',
     'common.delete': 'Delete',
     'common.loading': 'Loading...',
-    'common.error': 'Error',
-    'common.success': 'Success',
     'common.yes': 'Yes',
     'common.no': 'No',
     'common.search': 'Search',
@@ -364,6 +378,19 @@ const translations = {
     'machinery.farmer-name': 'விவசாயி பெயர்',
     'machinery.requirements': 'தேவைகள்',
 
+    // Common actions
+    'common.confirm-delete': 'இந்த பொருளை நீக்க வேண்டுமா?',
+
+    // Labor specific
+    'labor.fill-required-fields': 'அனைத்து தேவையான புலங்களையும் நிரப்பவும்.',
+    'labor.profile-deleted': 'வேலை விவரம் வெற்றிகரமாக நீக்கப்பட்டது.',
+    'labor.requirement-deleted': 'வேலை தேவை வெற்றிகரமாக நீக்கப்பட்டது.',
+
+    // Machinery specific
+    'machinery.fill-required-fields': 'அனைத்து தேவையான புலங்களையும் நிரப்பவும்.',
+    'machinery.listing-deleted': 'இயந்திர பட்டியல் வெற்றிகரமாக நீக்கப்பட்டது.',
+    'machinery.requirement-deleted': 'இயந்திர தேவை வெற்றிகரமாக நீக்கப்பட்டது.',
+
     // Government Schemes
     'schemes.title': 'அரசு திட்டங்கள்',
     'schemes.description': 'இந்திய விவசாயிகளுக்கான சமீபத்திய மானியங்கள், கடன்கள், காப்பீடு மற்றும் ஆதரவு திட்டங்கள்',
@@ -430,8 +457,6 @@ const translations = {
     'common.edit': 'திருத்து',
     'common.delete': 'நீக்கு',
     'common.loading': 'ஏற்றுகிறது...',
-    'common.error': 'பிழை',
-    'common.success': 'வெற்றி',
     'common.yes': 'ஆம்',
     'common.no': 'இல்லை',
     'common.search': 'தேடல்',

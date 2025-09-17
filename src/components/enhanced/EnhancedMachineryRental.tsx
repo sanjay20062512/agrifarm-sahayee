@@ -24,6 +24,8 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/components/LanguageContext";
+import { Trash2 } from "lucide-react";
 
 interface MachineryProfile {
   id: string;
@@ -116,6 +118,7 @@ export const EnhancedMachineryRental = () => {
   const [showCreateListing, setShowCreateListing] = useState(false);
   const [showCreateRequirement, setShowCreateRequirement] = useState(false);
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   // Form states for machinery listing creation
   const [listingFormData, setListingFormData] = useState({
@@ -246,11 +249,65 @@ export const EnhancedMachineryRental = () => {
     setFilteredMachinery(filtered);
   };
 
+  const deleteMachineryListing = async (listingId: string) => {
+    const confirmDelete = window.confirm(t('common.confirm-delete'));
+    if (!confirmDelete) return;
+
+    try {
+      const { error } = await supabase
+        .from('machinery_listings')
+        .delete()
+        .eq('id', listingId);
+
+      if (error) throw error;
+
+      toast({
+        title: t('common.success'),
+        description: t('machinery.listing-deleted'),
+      });
+      fetchMachineryListings();
+    } catch (error) {
+      console.error('Error deleting machinery listing:', error);
+      toast({
+        title: t('common.error'),
+        description: t('common.error-occurred'),
+        variant: "destructive"
+      });
+    }
+  };
+
+  const deleteMachineryRequirement = async (requirementId: string) => {
+    const confirmDelete = window.confirm(t('common.confirm-delete'));
+    if (!confirmDelete) return;
+
+    try {
+      const { error } = await supabase
+        .from('machinery_requirements')
+        .delete()
+        .eq('id', requirementId);
+
+      if (error) throw error;
+
+      toast({
+        title: t('common.success'),
+        description: t('machinery.requirement-deleted'),
+      });
+      fetchMachineryRequirements();
+    } catch (error) {
+      console.error('Error deleting machinery requirement:', error);
+      toast({
+        title: t('common.error'),
+        description: t('common.error-occurred'),
+        variant: "destructive"
+      });
+    }
+  };
+
   const createMachineryListing = async () => {
     if (!listingFormData.owner_name || !listingFormData.owner_phone || !listingFormData.machinery_type || !listingFormData.brand || !listingFormData.model) {
       toast({
-        title: "Error",
-        description: "Please fill in all required fields including machinery details.",
+        title: t('common.error'),
+        description: t('machinery.fill-required-fields'),
         variant: "destructive"
       });
       return;
@@ -639,7 +696,18 @@ export const EnhancedMachineryRental = () => {
                             {requirement.location} • Required on {new Date(requirement.required_date).toLocaleDateString()}
                           </CardDescription>
                         </div>
-                        <Badge variant="outline">{matches.length} AI Matches</Badge>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline">{matches.length} AI Matches</Badge>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => deleteMachineryRequirement(requirement.id)}
+                            className="text-destructive hover:text-destructive"
+                            title={t('common.delete')}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
                       </div>
                     </CardHeader>
                     <CardContent>
@@ -780,13 +848,24 @@ export const EnhancedMachineryRental = () => {
                 {machineryListings.map((listing) => (
                   <Card key={listing.id} className="hover:shadow-crop transition-all duration-300">
                     <CardHeader>
-                      <CardTitle className="text-lg flex items-center gap-2">
-                        <span className="text-2xl">{getMachineryIcon(listing.machinery_type)}</span>
-                        {listing.brand} {listing.model}
-                        {listing.verified && (
-                          <Award className="w-4 h-4 text-success" />
-                        )}
-                      </CardTitle>
+                      <div className="flex justify-between items-start">
+                        <CardTitle className="text-lg flex items-center gap-2">
+                          <span className="text-2xl">{getMachineryIcon(listing.machinery_type)}</span>
+                          {listing.brand} {listing.model}
+                          {listing.verified && (
+                            <Award className="w-4 h-4 text-success" />
+                          )}
+                        </CardTitle>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => deleteMachineryListing(listing.id)}
+                          className="text-destructive hover:text-destructive"
+                          title={t('common.delete')}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
                       <CardDescription>
                         {machineryTypes[listing.machinery_type as keyof typeof machineryTypes]}
                       </CardDescription>
