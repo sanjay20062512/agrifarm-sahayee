@@ -63,7 +63,13 @@ export const EnhancedFarmerForum = () => {
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [isGuest, setIsGuest] = useState(true); // For demo, assume guest mode
   const [isLoading, setIsLoading] = useState(true);
-  const [guestSessionId] = useState(crypto.randomUUID());
+  const [guestSessionId] = useState(() => {
+    const stored = localStorage.getItem('guestSessionId');
+    if (stored) return stored;
+    const newId = crypto.randomUUID();
+    localStorage.setItem('guestSessionId', newId);
+    return newId;
+  });
   const [expandedPosts, setExpandedPosts] = useState<Set<string>>(new Set());
   
   // New post form
