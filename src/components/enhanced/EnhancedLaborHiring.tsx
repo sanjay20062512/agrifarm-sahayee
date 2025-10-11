@@ -143,6 +143,43 @@ export const EnhancedLaborHiring = () => {
     } else {
       fetchJobProfiles();
     }
+
+    // Set up real-time subscriptions
+    const laborChannel = supabase
+      .channel('labor_profiles_changes')
+      .on('postgres_changes', 
+        { event: '*', schema: 'public', table: 'labor_profiles' }, 
+        () => {
+          if (mode === "hiring") fetchLaborers();
+        }
+      )
+      .subscribe();
+
+    const jobProfilesChannel = supabase
+      .channel('job_profiles_changes')
+      .on('postgres_changes', 
+        { event: '*', schema: 'public', table: 'job_profiles' }, 
+        () => {
+          if (mode === "job") fetchJobProfiles();
+        }
+      )
+      .subscribe();
+
+    const jobReqChannel = supabase
+      .channel('job_requirements_changes')
+      .on('postgres_changes', 
+        { event: '*', schema: 'public', table: 'job_requirements' }, 
+        () => {
+          if (mode === "hiring") fetchJobRequirements();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(laborChannel);
+      supabase.removeChannel(jobProfilesChannel);
+      supabase.removeChannel(jobReqChannel);
+    };
   }, [mode]);
 
   useEffect(() => {

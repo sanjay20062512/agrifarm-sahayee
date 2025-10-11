@@ -164,6 +164,43 @@ export const EnhancedMachineryRental = () => {
     } else {
       fetchMachineryListings();
     }
+
+    // Set up real-time subscriptions
+    const machineryChannel = supabase
+      .channel('machinery_profiles_changes')
+      .on('postgres_changes', 
+        { event: '*', schema: 'public', table: 'machinery_profiles' }, 
+        () => {
+          if (mode === "require") fetchMachinery();
+        }
+      )
+      .subscribe();
+
+    const listingsChannel = supabase
+      .channel('machinery_listings_changes')
+      .on('postgres_changes', 
+        { event: '*', schema: 'public', table: 'machinery_listings' }, 
+        () => {
+          if (mode === "rental") fetchMachineryListings();
+        }
+      )
+      .subscribe();
+
+    const reqChannel = supabase
+      .channel('machinery_requirements_changes')
+      .on('postgres_changes', 
+        { event: '*', schema: 'public', table: 'machinery_requirements' }, 
+        () => {
+          if (mode === "require") fetchMachineryRequirements();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(machineryChannel);
+      supabase.removeChannel(listingsChannel);
+      supabase.removeChannel(reqChannel);
+    };
   }, [mode]);
 
   useEffect(() => {
