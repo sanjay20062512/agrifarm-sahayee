@@ -8,8 +8,22 @@ interface LanguageContextType {
 
 const translations = {
   en: {
-    // Header
+    // Header & App
     'app.title': 'AgriAI',
+    'app.subtitle': 'Smart Farming Assistant',
+    
+    // Hero Section
+    'hero.welcome': 'Welcome to',
+    'hero.subtitle': 'Your multilingual farming assistant for Indian agriculture',
+    'hero.feature1': 'Tamil + English Support',
+    'hero.feature2': 'Real-time Recommendations',
+    'hero.feature3': 'Farmer Community',
+    'hero.cta': 'Get Started with Crop Recommendations',
+    'hero.stat1': 'Happy Farmers',
+    'hero.stat2': 'Crop Varieties',
+    'hero.stat3': 'AI Support',
+    
+    // Navigation
     'nav.crop-recommendation': 'Crop Recommendation',
     'nav.farmer-forum': 'Farmer Forum',
     'nav.ai-assistance': 'AI Assistance',
@@ -239,8 +253,22 @@ const translations = {
     'common.show-less': 'Show Less',
   },
   ta: {
-    // Header
+    // Header & App
     'app.title': 'வேளாண் AI',
+    'app.subtitle': 'திறமையான வேளாண் உதவியாளர்',
+    
+    // Hero Section
+    'hero.welcome': 'வரவேற்கிறோம்',
+    'hero.subtitle': 'இந்திய வேளாண்மைக்கான உங்கள் பல்மொழி வேளாண் உதவியாளர்',
+    'hero.feature1': 'தமிழ் + ஆங்கில ஆதரவு',
+    'hero.feature2': 'நேரடி பரிந்துரைகள்',
+    'hero.feature3': 'விவசாயி சமூகம்',
+    'hero.cta': 'பயிர் பரிந்துரைகளுடன் தொடங்குங்கள்',
+    'hero.stat1': 'மகிழ்ச்சியான விவசாயிகள்',
+    'hero.stat2': 'பயிர் வகைகள்',
+    'hero.stat3': 'AI ஆதரவு',
+    
+    // Navigation
     'nav.crop-recommendation': 'பயிர் பரிந்துரை',
     'nav.farmer-forum': 'விவசாயி மன்றம்',
     'nav.ai-assistance': 'AI உதவி',

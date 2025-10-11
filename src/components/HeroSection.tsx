@@ -1,12 +1,16 @@
 import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/agri-hero.jpg";
 import { ArrowRight, Users, Lightbulb, TrendingUp } from "lucide-react";
+import { useLanguage } from "./LanguageContext";
 
 interface HeroSectionProps {
   onGetStarted: () => void;
 }
 
+
 export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
+  const { t } = useLanguage();
+  
   return (
     <section className="relative overflow-hidden">
       {/* Hero Background */}
@@ -21,25 +25,25 @@ export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
       <div className="relative container mx-auto px-4 py-20 lg:py-32">
         <div className="max-w-4xl mx-auto text-center text-primary-foreground">
           <h1 className="text-4xl lg:text-6xl font-bold mb-6 animate-grow">
-            Welcome to <span className="text-accent">AgriAI</span>
+            {t("hero.welcome")} <span className="text-accent">{t("app.title")}</span>
           </h1>
           
           <p className="text-lg lg:text-xl mb-8 opacity-90 animate-grow">
-            Your multilingual farming assistant for Indian agriculture
+            {t("hero.subtitle")}
           </p>
           
           <div className="flex flex-wrap justify-center gap-4 mb-12 animate-grow">
             <div className="flex items-center gap-2 bg-primary-foreground/20 rounded-full px-4 py-2">
               <Lightbulb className="w-5 h-5 text-accent" />
-              <span>Tamil + English Support</span>
+              <span>{t("hero.feature1")}</span>
             </div>
             <div className="flex items-center gap-2 bg-primary-foreground/20 rounded-full px-4 py-2">
               <TrendingUp className="w-5 h-5 text-accent" />
-              <span>Real-time Recommendations</span>
+              <span>{t("hero.feature2")}</span>
             </div>
             <div className="flex items-center gap-2 bg-primary-foreground/20 rounded-full px-4 py-2">
               <Users className="w-5 h-5 text-accent" />
-              <span>Farmer Community</span>
+              <span>{t("hero.feature3")}</span>
             </div>
           </div>
 
@@ -49,7 +53,7 @@ export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
             size="lg"
             className="text-lg px-8 py-4 h-auto animate-grow"
           >
-            Get Started with Crop Recommendations
+            {t("hero.cta")}
             <ArrowRight className="w-5 h-5 ml-2" />
           </Button>
         </div>
@@ -61,15 +65,15 @@ export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             <div className="space-y-2">
               <h3 className="text-3xl font-bold text-success">10,000+</h3>
-              <p className="text-muted-foreground">Happy Farmers</p>
+              <p className="text-muted-foreground">{t("hero.stat1")}</p>
             </div>
             <div className="space-y-2">
               <h3 className="text-3xl font-bold text-success">500+</h3>
-              <p className="text-muted-foreground">Crop Varieties</p>
+              <p className="text-muted-foreground">{t("hero.stat2")}</p>
             </div>
             <div className="space-y-2">
               <h3 className="text-3xl font-bold text-success">24/7</h3>
-              <p className="text-muted-foreground">AI Support</p>
+              <p className="text-muted-foreground">{t("hero.stat3")}</p>
             </div>
           </div>
         </div>

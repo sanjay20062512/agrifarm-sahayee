@@ -79,7 +79,7 @@ export const Header = ({ activeTab, setActiveTab }: HeaderProps) => {
             </div>
             <div>
               <h1 className="text-xl font-bold text-foreground">{t("app.title")}</h1>
-              <p className="text-xs text-muted-foreground">Smart Farming Assistant</p>
+              <p className="text-xs text-muted-foreground">{t("app.subtitle")}</p>
             </div>
           </div>
 
