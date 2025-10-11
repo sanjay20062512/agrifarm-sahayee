@@ -70,7 +70,7 @@ export const EnhancedFarmerForum = () => {
   const [newPost, setNewPost] = useState({
     title: "",
     content: "",
-    category: "",
+    category: "General Discussion",
     author_name: "",
     author_location: "",
     tags: ""
@@ -151,17 +151,31 @@ export const EnhancedFarmerForum = () => {
   };
 
   const handleCreatePost = async () => {
-    if (!newPost.title || !newPost.content || !newPost.author_name) {
+    const title = newPost.title.trim();
+    const content = newPost.content.trim();
+    const author_name = newPost.author_name.trim();
+    const author_location = (newPost.author_location || "").trim() || "Unknown";
+    const category = (newPost.category || "").trim() || "General Discussion";
+
+    if (!title || !content || !author_name) {
       alert('Please fill in all required fields');
       return;
     }
 
     try {
       const postData = {
-        ...newPost,
-        tags: newPost.tags.split(',').map(tag => tag.trim()).filter(tag => tag),
+        title,
+        content,
+        category,
+        author_name,
+        author_location,
+        tags: newPost.tags
+          .split(',')
+          .map((tag) => tag.trim())
+          .filter(Boolean),
         is_guest_post: isGuest,
-        guest_session_id: isGuest ? guestSessionId : null
+        guest_session_id: isGuest ? guestSessionId : null,
+        status: 'active',
       };
 
       const { data: insertedPost, error } = await supabase
@@ -172,25 +186,28 @@ export const EnhancedFarmerForum = () => {
 
       if (error) throw error;
 
-      // Trigger AI analysis for the new post
       if (insertedPost) {
-        triggerAIAnalysis(insertedPost.id, insertedPost.title, insertedPost.content, insertedPost.category);
+        triggerAIAnalysis(
+          insertedPost.id,
+          insertedPost.title,
+          insertedPost.content,
+          insertedPost.category
+        );
       }
 
-      // Reset form and refresh posts
       setNewPost({
         title: "",
         content: "",
-        category: "",
+        category: "General Discussion",
         author_name: "",
         author_location: "",
-        tags: ""
+        tags: "",
       });
       setShowCreatePost(false);
       fetchPosts();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating post:', error);
-      alert('Error creating post. Please try again.');
+      alert(error?.message || 'Error creating post. Please try again.');
     }
   };
 
