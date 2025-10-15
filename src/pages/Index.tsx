@@ -13,6 +13,8 @@ import { GovernmentSchemes } from "@/components/GovernmentSchemes";
 import { SchemeDetails } from "@/components/SchemeDetails";
 import { EnhancedLaborHiring } from "@/components/enhanced/EnhancedLaborHiring";
 import { EnhancedMachineryRental } from "@/components/enhanced/EnhancedMachineryRental";
+import { Learning } from "@/components/Learning";
+import { OrganicFarming } from "@/components/OrganicFarming";
 import { LanguageProvider } from "@/components/LanguageContext";
 
 interface FormData {
@@ -151,6 +153,10 @@ const Index = () => {
             <EnhancedMachineryRental />
           </div>
         );
+      case "learning":
+        return <Learning />;
+      case "organic-farming":
+        return <OrganicFarming />;
       default:
         return <HeroSection onGetStarted={handleGetStarted} />;
     }

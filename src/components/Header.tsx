@@ -10,7 +10,8 @@ import {
   Tractor,
   Menu,
   X,
-  Globe
+  Globe,
+  BookOpen
 } from "lucide-react";
 import { useLanguage } from "./LanguageContext";
 
@@ -31,9 +32,21 @@ export const Header = ({ activeTab, setActiveTab }: HeaderProps) => {
       variant: "nav" as const
     },
     { 
+      id: "learning", 
+      label: t("nav.learning"), 
+      icon: Users,
+      variant: "crop" as const
+    },
+    { 
+      id: "organic-farming", 
+      label: t("nav.organic-farming"), 
+      icon: Leaf,
+      variant: "earth" as const
+    },
+    { 
       id: "farmer-forum", 
       label: t("nav.farmer-forum"), 
-      icon: Users,
+      icon: MessageCircle,
       variant: "harvest" as const
     },
     { 
