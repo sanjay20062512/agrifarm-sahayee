@@ -184,13 +184,11 @@ export const Learning = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground mb-4 min-h-[60px]">{course.description}</p>
-                  <Button 
-                    variant="default" 
-                    className="w-full"
-                    onClick={() => window.open(course.link, '_blank')}
-                  >
-                    {t("learning.startCourse")}
-                    <ExternalLink className="w-4 h-4 ml-2" />
+                  <Button asChild variant="default" className="w-full">
+                    <a href={course.link} target="_blank" rel="noopener noreferrer">
+                      {t("learning.startCourse")}
+                      <ExternalLink className="w-4 h-4 ml-2" />
+                    </a>
                   </Button>
                 </CardContent>
               </Card>
@@ -220,16 +218,20 @@ export const Learning = () => {
                       frameBorder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="strict-origin-when-cross-origin"
                       className="w-full h-full"
                     />
                   </div>
                   <Button 
+                    asChild
                     variant="outline" 
                     className="w-full"
-                    onClick={() => window.open(`https://www.youtube.com/watch?v=${video.videoId}`, '_blank')}
                   >
-                    {t("learning.watchNow")}
-                    <ExternalLink className="w-4 h-4 ml-2" />
+                    <a href={`https://www.youtube.com/watch?v=${video.videoId}`} target="_blank" rel="noopener noreferrer">
+                      {t("learning.watchNow")}
+                      <ExternalLink className="w-4 h-4 ml-2" />
+                    </a>
                   </Button>
                 </CardContent>
               </Card>
@@ -249,12 +251,14 @@ export const Learning = () => {
                 <CardContent>
                   <p className="text-sm text-muted-foreground mb-4 min-h-[40px]">{resource.description}</p>
                   <Button 
+                    asChild
                     variant="secondary" 
                     className="w-full"
-                    onClick={() => window.open(resource.link, '_blank')}
                   >
-                    <Download className="w-4 h-4 mr-2" />
-                    {t("learning.download")}
+                    <a href={resource.link} target="_blank" rel="noopener noreferrer">
+                      <Download className="w-4 h-4 mr-2" />
+                      {t("learning.download")}
+                    </a>
                   </Button>
                 </CardContent>
               </Card>
