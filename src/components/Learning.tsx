@@ -209,20 +209,27 @@ export const Learning = () => {
                   <CardDescription>{video.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="aspect-video bg-muted rounded-lg overflow-hidden mb-4">
-                    <iframe
-                      width="100%"
-                      height="100%"
-                      src={`https://www.youtube.com/embed/${video.videoId}`}
-                      title={video.title}
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                      loading="lazy"
-                      referrerPolicy="strict-origin-when-cross-origin"
-                      className="w-full h-full"
-                    />
-                  </div>
+                  <a
+                    href={`https://www.youtube.com/watch?v=${video.videoId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block group"
+                  >
+                    <div className="aspect-video bg-muted rounded-lg overflow-hidden mb-4 relative">
+                      <img
+                        src={`https://img.youtube.com/vi/${video.videoId}/hqdefault.jpg`}
+                        alt={`${video.title} thumbnail`}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                        referrerPolicy="no-referrer"
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="rounded-full p-3 bg-background/70 ring-1 ring-border group-hover:bg-background transition">
+                          <Video className="w-6 h-6 text-primary" />
+                        </div>
+                      </div>
+                    </div>
+                  </a>
                   <Button 
                     asChild
                     variant="outline" 
