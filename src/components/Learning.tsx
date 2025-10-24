@@ -3,9 +3,34 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BookOpen, Video, FileText, Award, Users, Sprout, ExternalLink, Download } from "lucide-react";
 import { useLanguage } from "./LanguageContext";
 import { Button } from "./ui/button";
-
+import { useEffect, useRef } from "react";
 export const Learning = () => {
   const { t } = useLanguage();
+
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const onClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const anchor = target.closest('a') as HTMLAnchorElement | null;
+      if (!anchor) return;
+
+      const href = anchor.getAttribute('href');
+      if (!href || href.startsWith('#')) return;
+
+      const isExternal = /^https?:\/\//.test(href);
+      if (isExternal) {
+        e.preventDefault();
+        window.open(href, '_blank', 'noopener,noreferrer');
+      }
+    };
+
+    el.addEventListener('click', onClick);
+    return () => el.removeEventListener('click', onClick);
+  }, []);
 
   const courses = [
     {
@@ -151,7 +176,7 @@ export const Learning = () => {
   ];
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div ref={containerRef} className="container mx-auto px-4 py-8">
       <div className="mb-8">
         <h1 className="text-4xl font-bold mb-4 text-primary">{t("learning.title")}</h1>
         <p className="text-lg text-muted-foreground">{t("learning.subtitle")}</p>
