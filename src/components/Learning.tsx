@@ -185,7 +185,7 @@ export const Learning = () => {
                 <CardContent>
                   <p className="text-muted-foreground mb-4 min-h-[60px]">{course.description}</p>
                   <Button 
-                    variant="crop" 
+                    variant="default" 
                     className="w-full"
                     onClick={() => window.open(course.link, '_blank')}
                   >
@@ -272,7 +272,7 @@ export const Learning = () => {
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground mb-4">{t("learning.community.desc")}</p>
-          <Button variant="harvest">{t("learning.community.join")}</Button>
+          <Button variant="default">{t("learning.community.join")}</Button>
         </CardContent>
       </Card>
     </div>
