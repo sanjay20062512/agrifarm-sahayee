@@ -291,6 +291,75 @@ const translations = {
     'learning.community.title': 'Join Our Learning Community',
     'learning.community.desc': 'Connect with farmers, share experiences, and learn together',
     'learning.community.join': 'Join Community',
+
+    // Organic Farming Section
+    'organic.title': 'Organic Farming',
+    'organic.subtitle': 'Simple, sustainable methods for healthy crops and soil',
+    'organic.tabs.principles': 'Principles',
+    'organic.tabs.techniques': 'Techniques',
+    'organic.tabs.benefits': 'Benefits',
+    'organic.tabs.certification': 'Certification',
+
+    'organic.principles.header': 'Core Principles of Organic Farming',
+    'organic.principles.subheader': 'The foundation for sustainable agriculture',
+
+    'organic.principle1.title': 'Soil Health',
+    'organic.principle1.desc': 'Build rich soil using compost and natural manures',
+    'organic.principle2.title': 'Biodiversity',
+    'organic.principle2.desc': 'Encourage a mix of plants and beneficial insects',
+    'organic.principle3.title': 'Natural Pest Control',
+    'organic.principle3.desc': 'Manage pests without chemicals using safe methods',
+    'organic.principle4.title': 'Water Care',
+    'organic.principle4.desc': 'Use water wisely with good irrigation practices',
+
+    'organic.technique1.title': 'Composting',
+    'organic.technique1.desc': 'Turn farm waste into powerful natural fertilizer',
+    'organic.technique1.step1': 'Collect dry and green farm waste',
+    'organic.technique1.step2': 'Layer materials and keep slightly moist',
+    'organic.technique1.step3': 'Turn the pile regularly for airflow',
+
+    'organic.technique2.title': 'Crop Rotation',
+    'organic.technique2.desc': 'Rotate crops to improve soil and reduce pests',
+    'organic.technique2.step1': 'Plan a 3–4 year rotation map',
+    'organic.technique2.step2': 'Alternate different crop families',
+    'organic.technique2.step3': 'Include legumes to fix nitrogen',
+
+    'organic.technique3.title': 'Green Manuring',
+    'organic.technique3.desc': 'Grow cover crops to add nutrients and protect soil',
+    'organic.technique3.step1': 'Sow cover crops in off-season',
+    'organic.technique3.step2': 'Let them grow for 6–8 weeks',
+    'organic.technique3.step3': 'Incorporate before flowering',
+
+    'organic.steps': 'Steps',
+
+    'organic.benefit1.title': 'Healthier Produce',
+    'organic.benefit1.desc': 'Chemical-free crops with better taste and nutrition',
+    'organic.benefit2.title': 'Safer for Farmers',
+    'organic.benefit2.desc': 'Lower exposure to harmful chemicals',
+    'organic.benefit3.title': 'Better Soil & Long-term Yield',
+    'organic.benefit3.desc': 'Improves soil fertility and keeps fields productive',
+
+    'organic.impact.title': 'Environmental Impact',
+    'organic.impact.point1': 'Less soil erosion and healthier soil life',
+    'organic.impact.point2': 'Cleaner water with fewer chemical residues',
+    'organic.impact.point3': 'More beneficial insects and birds',
+
+    'organic.cert.header': 'Organic Certification',
+    'organic.cert.subheader': 'Basic requirements to get organic certification',
+    'organic.cert.official': 'Official',
+    'organic.cert.requirements': 'Requirements',
+
+    'organic.cert1.name': 'Participatory Guarantee System (PGS-India)',
+    'organic.cert1.desc': 'Farmer group-based local certification for domestic market',
+    'organic.cert1.req1': 'Follow organic standards for at least 1–3 years',
+    'organic.cert1.req2': 'Maintain simple farm records and maps',
+    'organic.cert1.req3': 'Allow peer inspections and reviews',
+
+    'organic.cert2.name': 'NPOP Certification (APEDA)',
+    'organic.cert2.desc': 'National organic certification suitable for exports',
+    'organic.cert2.req1': 'Work with an approved certification body',
+    'organic.cert2.req2': 'Keep detailed input and harvest records',
+    'organic.cert2.req3': 'Annual inspections and compliance checks',
   },
   ta: {
     // Header & App
