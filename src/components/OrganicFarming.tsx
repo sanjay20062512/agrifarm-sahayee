@@ -58,6 +58,15 @@ export const OrganicFarming = () => {
         t("organic.technique3.step3"),
       ],
     },
+    {
+      title: t("organic.technique4.title"),
+      description: t("organic.technique4.desc"),
+      steps: [
+        t("organic.technique4.step1"),
+        t("organic.technique4.step2"),
+        t("organic.technique4.step3"),
+      ],
+    },
   ];
 
   const benefits = [
@@ -75,6 +84,11 @@ export const OrganicFarming = () => {
       icon: TrendingUp,
       title: t("organic.benefit3.title"),
       description: t("organic.benefit3.desc"),
+    },
+    {
+      icon: Recycle,
+      title: t("organic.benefit4.title"),
+      description: t("organic.benefit4.desc"),
     },
   ];
 
@@ -110,7 +124,7 @@ export const OrganicFarming = () => {
       </div>
 
       <Tabs defaultValue="principles" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4">
           <TabsTrigger value="principles">{t("organic.tabs.principles")}</TabsTrigger>
           <TabsTrigger value="techniques">{t("organic.tabs.techniques")}</TabsTrigger>
           <TabsTrigger value="benefits">{t("organic.tabs.benefits")}</TabsTrigger>

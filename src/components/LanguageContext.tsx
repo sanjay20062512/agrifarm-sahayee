@@ -330,6 +330,12 @@ const translations = {
     'organic.technique3.step2': 'Let them grow for 6–8 weeks',
     'organic.technique3.step3': 'Incorporate before flowering',
 
+    'organic.technique4.title': 'Mulching',
+    'organic.technique4.desc': 'Cover soil with straw/leaves to keep moisture and stop weeds',
+    'organic.technique4.step1': 'Spread dry leaves or straw around plants',
+    'organic.technique4.step2': 'Keep a small gap near the stem for airflow',
+    'organic.technique4.step3': 'Refresh mulch layer every few weeks',
+
     'organic.steps': 'Steps',
 
     'organic.benefit1.title': 'Healthier Produce',
@@ -338,6 +344,8 @@ const translations = {
     'organic.benefit2.desc': 'Lower exposure to harmful chemicals',
     'organic.benefit3.title': 'Better Soil & Long-term Yield',
     'organic.benefit3.desc': 'Improves soil fertility and keeps fields productive',
+    'organic.benefit4.title': 'Lower Costs Over Time',
+    'organic.benefit4.desc': 'Saves on chemical inputs and improves long-term profits',
 
     'organic.impact.title': 'Environmental Impact',
     'organic.impact.point1': 'Less soil erosion and healthier soil life',
@@ -675,6 +683,11 @@ const translations = {
     'organic.technique3.step1': 'பருவமில்லாத காலத்தில் மூடி பயிர்களை நடவும்',
     'organic.technique3.step2': 'தாவரங்கள் 6-8 வாரங்கள் வளர அனுமதிக்கவும்',
     'organic.technique3.step3': 'பூக்கும் முன் தாவரங்களை மண்ணில் உழவும்',
+    'organic.technique4.title': 'மல்சிங் (Mulching)',
+    'organic.technique4.desc': 'வைக்கோல்/இலைகளால் மண்ணை மூடி ஈரப்பதத்தை காக்கவும், களைகளைத் தடுக்கவும்',
+    'organic.technique4.step1': 'தாவரங்களுக்கு சுற்றில் வைக்கோல் அல்லது உலர்ந்த இலைகளைப் பரப்பவும்',
+    'organic.technique4.step2': 'காம்புக்கு அருகில் சிறிய இடைவெளி விடவும்',
+    'organic.technique4.step3': 'ஒவ்வொரு சில வாரங்களிலும் மல்ச் அடுக்கை புதுப்பிக்கவும்',
     'organic.steps': 'படிகள்',
     'organic.benefit1.title': 'ஆரோக்கியமான உற்பத்தி',
     'organic.benefit1.desc': 'சிறந்த ஊட்டச்சத்து மற்றும் சுவையுடன் இரசாயன இல்லாத பயிர்கள்',
@@ -682,6 +695,8 @@ const translations = {
     'organic.benefit2.desc': 'மாசுபாட்டை குறைக்கவும் சூழல் அமைப்புகளை பாதுகாக்கவும்',
     'organic.benefit3.title': 'சிறந்த விலைகள்',
     'organic.benefit3.desc': 'சான்றளிக்கப்பட்ட இயற்கை உற்பத்தி பிரீமியம் விலைகளைக் கட்டளையிடுகிறது',
+    'organic.benefit4.title': 'நீண்டகால செலவு குறைவு',
+    'organic.benefit4.desc': 'இரசாயன உள்ளீடு செலவு குறைந்து நீண்டகால லாபம் உயரும்',
     'organic.impact.title': 'நீண்ட கால சுற்றுச்சூழல் தாக்கம்',
     'organic.impact.point1': 'மண் அரிப்பை 50% குறைக்கிறது',
     'organic.impact.point2': 'நீர் தக்கவைப்பை 30% மேம்படுத்துகிறது',
