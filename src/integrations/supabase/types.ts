@@ -294,12 +294,15 @@ export type Database = {
       }
       labor_bookings: {
         Row: {
+          commission_amount: number | null
+          commission_percentage: number | null
           created_at: string
           district: string
           end_date: string
           end_time: string | null
           farmer_id: string | null
           farmer_notes: string | null
+          final_amount: number | null
           id: string
           labor_id: string | null
           labor_notes: string | null
@@ -315,14 +318,21 @@ export type Database = {
           task_description: string
           total_amount: number | null
           updated_at: string
+          work_completed_at: string | null
+          work_location_lat: number | null
+          work_location_lng: number | null
+          work_started_at: string | null
         }
         Insert: {
+          commission_amount?: number | null
+          commission_percentage?: number | null
           created_at?: string
           district: string
           end_date: string
           end_time?: string | null
           farmer_id?: string | null
           farmer_notes?: string | null
+          final_amount?: number | null
           id?: string
           labor_id?: string | null
           labor_notes?: string | null
@@ -338,14 +348,21 @@ export type Database = {
           task_description: string
           total_amount?: number | null
           updated_at?: string
+          work_completed_at?: string | null
+          work_location_lat?: number | null
+          work_location_lng?: number | null
+          work_started_at?: string | null
         }
         Update: {
+          commission_amount?: number | null
+          commission_percentage?: number | null
           created_at?: string
           district?: string
           end_date?: string
           end_time?: string | null
           farmer_id?: string | null
           farmer_notes?: string | null
+          final_amount?: number | null
           id?: string
           labor_id?: string | null
           labor_notes?: string | null
@@ -361,6 +378,10 @@ export type Database = {
           task_description?: string
           total_amount?: number | null
           updated_at?: string
+          work_completed_at?: string | null
+          work_location_lat?: number | null
+          work_location_lng?: number | null
+          work_started_at?: string | null
         }
         Relationships: [
           {
@@ -456,6 +477,8 @@ export type Database = {
       machinery_bookings: {
         Row: {
           booking_type: string
+          commission_amount: number | null
+          commission_percentage: number | null
           created_at: string
           days: number | null
           district: string
@@ -463,6 +486,7 @@ export type Database = {
           end_time: string | null
           farmer_id: string | null
           farmer_notes: string | null
+          final_amount: number | null
           fuel_cost: number | null
           hours: number | null
           id: string
@@ -479,9 +503,15 @@ export type Database = {
           status: Database["public"]["Enums"]["booking_status"] | null
           total_amount: number
           updated_at: string
+          work_completed_at: string | null
+          work_location_lat: number | null
+          work_location_lng: number | null
+          work_started_at: string | null
         }
         Insert: {
           booking_type: string
+          commission_amount?: number | null
+          commission_percentage?: number | null
           created_at?: string
           days?: number | null
           district: string
@@ -489,6 +519,7 @@ export type Database = {
           end_time?: string | null
           farmer_id?: string | null
           farmer_notes?: string | null
+          final_amount?: number | null
           fuel_cost?: number | null
           hours?: number | null
           id?: string
@@ -505,9 +536,15 @@ export type Database = {
           status?: Database["public"]["Enums"]["booking_status"] | null
           total_amount: number
           updated_at?: string
+          work_completed_at?: string | null
+          work_location_lat?: number | null
+          work_location_lng?: number | null
+          work_started_at?: string | null
         }
         Update: {
           booking_type?: string
+          commission_amount?: number | null
+          commission_percentage?: number | null
           created_at?: string
           days?: number | null
           district?: string
@@ -515,6 +552,7 @@ export type Database = {
           end_time?: string | null
           farmer_id?: string | null
           farmer_notes?: string | null
+          final_amount?: number | null
           fuel_cost?: number | null
           hours?: number | null
           id?: string
@@ -531,6 +569,10 @@ export type Database = {
           status?: Database["public"]["Enums"]["booking_status"] | null
           total_amount?: number
           updated_at?: string
+          work_completed_at?: string | null
+          work_location_lat?: number | null
+          work_location_lng?: number | null
+          work_started_at?: string | null
         }
         Relationships: [
           {
@@ -824,6 +866,39 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          created_at: string
+          data: Json | null
+          id: string
+          message: string
+          read: boolean
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          data?: Json | null
+          id?: string
+          message: string
+          read?: boolean
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          data?: Json | null
+          id?: string
+          message?: string
+          read?: boolean
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       reviews: {
         Row: {
           booking_id: string | null
@@ -883,6 +958,78 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      transactions: {
+        Row: {
+          amount: number
+          booking_id: string
+          booking_type: string
+          commission: number
+          completed_at: string | null
+          created_at: string
+          id: string
+          payer_id: string
+          payment_method: string
+          receiver_id: string
+          status: string
+          transaction_ref: string | null
+        }
+        Insert: {
+          amount: number
+          booking_id: string
+          booking_type: string
+          commission?: number
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          payer_id: string
+          payment_method: string
+          receiver_id: string
+          status?: string
+          transaction_ref?: string | null
+        }
+        Update: {
+          amount?: number
+          booking_id?: string
+          booking_type?: string
+          commission?: number
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          payer_id?: string
+          payment_method?: string
+          receiver_id?: string
+          status?: string
+          transaction_ref?: string | null
+        }
+        Relationships: []
+      }
+      wallets: {
+        Row: {
+          balance: number
+          created_at: string
+          currency: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       weather_alerts: {
         Row: {
