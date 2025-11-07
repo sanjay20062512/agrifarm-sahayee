@@ -182,6 +182,7 @@ export const EnhancedMachineryRental = () => {
         { event: '*', schema: 'public', table: 'machinery_listings' }, 
         () => {
           if (mode === "rental") fetchMachineryListings();
+          if (mode === "require") fetchMachinery();
         }
       )
       .subscribe();
@@ -212,13 +213,36 @@ export const EnhancedMachineryRental = () => {
   const fetchMachinery = async () => {
     try {
       const { data, error } = await supabase
-        .from('machinery_profiles')
+        .from('machinery_listings')
         .select('*')
-        .eq('availability', 'available')
-        .order('rating', { ascending: false });
+        .eq('availability', true)
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setMachinery(data || []);
+      // Map listings to MachineryProfile shape for reuse
+      const mapped = (data || []).map((m: any) => ({
+        id: m.id,
+        owner_name: m.owner_name,
+        owner_phone: m.owner_phone,
+        machinery_type: m.machinery_type,
+        brand: m.brand,
+        model: m.model,
+        year_of_purchase: m.year_of_purchase,
+        location: m.location,
+        state: m.state,
+        district: m.district,
+        hourly_rate: m.hourly_rate,
+        daily_rate: m.daily_rate,
+        availability: m.availability ? 'available' : 'unavailable',
+        rating: m.rating ?? 0,
+        total_reviews: m.total_reviews ?? 0,
+        description: m.description,
+        fuel_type: m.fuel_type,
+        horsepower: m.horsepower,
+        working_width: m.working_width,
+        verified: m.verified ?? false,
+      }));
+      setMachinery(mapped);
     } catch (error) {
       console.error('Error fetching machinery:', error);
     } finally {

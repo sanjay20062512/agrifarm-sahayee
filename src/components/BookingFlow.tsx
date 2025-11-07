@@ -266,13 +266,36 @@ export const BookingFlow = ({ bookingId, bookingType, userRole, onClose }: Booki
 
       if (bookingError) throw bookingError;
 
+      // Resolve provider user id
+      let providerUserId: string | null = null;
+      if (bookingType === "machinery") {
+        const { data: mp, error: mpError } = await supabase
+          .from("machinery_profiles")
+          .select("owner_id")
+          .eq("id", booking.machinery_id)
+          .maybeSingle();
+        if (mpError) throw mpError;
+        providerUserId = mp?.owner_id ?? null;
+      } else {
+        const { data: lp, error: lpError } = await supabase
+          .from("labor_profiles")
+          .select("user_id")
+          .eq("id", booking.labor_id)
+          .maybeSingle();
+        if (lpError) throw lpError;
+        providerUserId = lp?.user_id ?? null;
+      }
+      if (!providerUserId) {
+        throw new Error("Provider user not found");
+      }
+
       // Create transaction record
       const { error: txError } = await supabase
         .from("transactions")
         .insert({
           booking_id: bookingId,
           payer_id: booking.farmer_id,
-          receiver_id: bookingType === "machinery" ? booking.machinery_id : booking.labor_id,
+          receiver_id: providerUserId,
           amount: totalAmount,
           commission: booking.commission_amount,
           booking_type: bookingType,
@@ -284,9 +307,8 @@ export const BookingFlow = ({ bookingId, bookingType, userRole, onClose }: Booki
       if (txError) throw txError;
 
       // Create notification for provider
-      const providerId = bookingType === "machinery" ? booking.machinery_id : booking.labor_id;
       await supabase.from("notifications").insert({
-        user_id: providerId,
+        user_id: providerUserId,
         type: "payment_received",
         title: "Payment Received",
         message: `Payment of ₹${booking.final_amount} received for booking`,
