@@ -20,7 +20,7 @@ export const AIAssistance = () => {
     {
       id: 1,
       type: "bot",
-      message: "🌾 Hello! I'm your enhanced AI farming assistant with real-time data access. I can provide live market prices, weather updates, crop recommendations, and instant solutions. All my information is updated automatically from 585+ markets and weather stations across India. How can I help you today?",
+      message: "🌾 Namaste! I'm your AI Farming Assistant with live data from 585+ Indian markets. I can help with:\n\n💰 Real-time crop prices\n🌦️ Weather forecasts\n🌱 Crop recommendations\n🐛 Disease diagnosis\n📊 Soil analysis\n\nWhat would you like to know?",
       timestamp: new Date()
     }
   ]);

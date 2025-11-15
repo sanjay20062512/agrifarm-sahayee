@@ -1,255 +1,253 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Leaf, Droplet, Bug, Recycle, Heart, Shield, TrendingUp } from "lucide-react";
-import { useLanguage } from "./LanguageContext";
-import { Badge } from "./ui/badge";
+import { Sprout, Bug, Droplets, Leaf, Shield, Sparkles, TreePine, Heart, Award, TrendingUp, Users, Globe, MapPin, Phone, CheckCircle2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export const OrganicFarming = () => {
-  const { t } = useLanguage();
-
   const principles = [
     {
-      icon: Leaf,
-      title: t("organic.principle1.title"),
-      description: t("organic.principle1.desc"),
+      title: "Soil Health & Fertility",
+      description: "Build living soil ecosystem through composting, crop rotation, and natural amendments. Use green manures, vermicompost, and biochar to enhance soil structure and microbial activity.",
+      icon: Sprout,
+      practices: ["Composting", "Crop Rotation", "Green Manuring", "Mulching"]
     },
     {
-      icon: Recycle,
-      title: t("organic.principle2.title"),
-      description: t("organic.principle2.desc"),
+      title: "Biodiversity Conservation",
+      description: "Promote diverse ecosystems with mixed cropping, hedge rows, and beneficial insect habitats. Maintain genetic diversity through traditional seed varieties.",
+      icon: TreePine,
+      practices: ["Intercropping", "Companion Planting", "Hedge Rows", "Native Seeds"]
     },
     {
+      title: "Natural Pest Management",
+      description: "Use biological controls, botanical pesticides, and integrated pest management. Encourage natural predators and maintain ecological balance.",
       icon: Bug,
-      title: t("organic.principle3.title"),
-      description: t("organic.principle3.desc"),
+      practices: ["Neem Spray", "Pheromone Traps", "Beneficial Insects", "Crop Barriers"]
     },
     {
-      icon: Droplet,
-      title: t("organic.principle4.title"),
-      description: t("organic.principle4.desc"),
+      title: "Water Conservation",
+      description: "Implement efficient irrigation, rainwater harvesting, and soil moisture retention. Use drip irrigation and mulching to reduce water consumption.",
+      icon: Droplets,
+      practices: ["Drip Irrigation", "Rainwater Harvesting", "Mulching", "Water Budgeting"]
     },
   ];
 
   const techniques = [
     {
-      title: t("organic.technique1.title"),
-      description: t("organic.technique1.desc"),
-      steps: [
-        t("organic.technique1.step1"),
-        t("organic.technique1.step2"),
-        t("organic.technique1.step3"),
-      ],
+      title: "Vermicomposting",
+      description: "Use earthworms to convert organic waste into nutrient-rich compost. Produces high-quality humus and liquid fertilizer (vermi-wash).",
+      icon: Sparkles,
+      steps: ["Setup bins", "Add bedding", "Introduce worms", "Feed waste", "Harvest compost"],
+      benefits: "Rich in NPK, improves soil structure, increases water retention"
     },
     {
-      title: t("organic.technique2.title"),
-      description: t("organic.technique2.desc"),
-      steps: [
-        t("organic.technique2.step1"),
-        t("organic.technique2.step2"),
-        t("organic.technique2.step3"),
-      ],
-    },
-    {
-      title: t("organic.technique3.title"),
-      description: t("organic.technique3.desc"),
-      steps: [
-        t("organic.technique3.step1"),
-        t("organic.technique3.step2"),
-        t("organic.technique3.step3"),
-      ],
-    },
-    {
-      title: t("organic.technique4.title"),
-      description: t("organic.technique4.desc"),
-      steps: [
-        t("organic.technique4.step1"),
-        t("organic.technique4.step2"),
-        t("organic.technique4.step3"),
-      ],
+      title: "Biofertilizers & Bio-pesticides",
+      description: "Utilize beneficial microorganisms like Rhizobium, Azotobacter, and Trichoderma for natural nutrient cycling and disease suppression.",
+      icon: Leaf,
+      steps: ["Culture selection", "Seed treatment", "Soil application", "Monitor growth"],
+      benefits: "Nitrogen fixation, phosphate solubilization, disease control"
     },
   ];
 
   const benefits = [
     {
-      icon: Heart,
-      title: t("organic.benefit1.title"),
-      description: t("organic.benefit1.desc"),
-    },
-    {
-      icon: Shield,
-      title: t("organic.benefit2.title"),
-      description: t("organic.benefit2.desc"),
-    },
-    {
+      title: "Higher Market Price",
+      description: "Organic products command 20-40% premium in markets due to health-conscious consumers and certification value.",
       icon: TrendingUp,
-      title: t("organic.benefit3.title"),
-      description: t("organic.benefit3.desc"),
+      value: "₹12-15/kg higher for organic produce"
     },
     {
-      icon: Recycle,
-      title: t("organic.benefit4.title"),
-      description: t("organic.benefit4.desc"),
+      title: "Environmental Protection",
+      description: "Protects soil health, water quality, and biodiversity. Reduces carbon footprint and promotes climate resilience.",
+      icon: Leaf,
+      value: "30% lower carbon emissions"
     },
   ];
 
   const certifications = [
     {
-      name: t("organic.cert1.name"),
-      description: t("organic.cert1.desc"),
+      name: "India Organic (NPOP)",
+      description: "National Programme for Organic Production by APEDA - recognized internationally",
+      icon: Award,
       requirements: [
-        t("organic.cert1.req1"),
-        t("organic.cert1.req2"),
-        t("organic.cert1.req3"),
+        "3-year conversion period for perennial crops, 2 years for annual crops",
+        "Bi-annual inspections by accredited agencies",
+        "Detailed record keeping of all farm activities",
+        "Compliance with NPOP standards and prohibited substance list",
       ],
+      cost: "₹15,000-25,000 annually",
+      validity: "1 year (renewable)"
     },
     {
-      name: t("organic.cert2.name"),
-      description: t("organic.cert2.desc"),
+      name: "Participatory Guarantee System (PGS)",
+      description: "Low-cost certification for local organic producers - ideal for small farmers",
+      icon: Users,
       requirements: [
-        t("organic.cert2.req1"),
-        t("organic.cert2.req2"),
-        t("organic.cert2.req3"),
+        "Join local organic farmer group (minimum 5 farmers)",
+        "Peer review and group guarantee system",
+        "Annual group verification and documentation",
+        "Adherence to PGS-India organic standards",
       ],
+      cost: "₹500-2,000 annually",
+      validity: "1 year (group-based renewal)"
     },
   ];
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-4">
-          <Leaf className="w-10 h-10 text-success" />
-          <h1 className="text-4xl font-bold text-primary">{t("organic.title")}</h1>
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+      <div className="container mx-auto px-4 py-12">
+        <div className="text-center mb-16 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <div className="inline-block p-4 bg-success/10 rounded-full mb-4">
+            <Leaf className="w-16 h-16 text-success" />
+          </div>
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-success to-primary bg-clip-text text-transparent mb-6">
+            Organic Farming Mastery
+          </h1>
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            Transform your farm into a sustainable, chemical-free ecosystem with proven organic methods.
+          </p>
         </div>
-        <p className="text-lg text-muted-foreground">{t("organic.subtitle")}</p>
-      </div>
 
-      <Tabs defaultValue="principles" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4">
-          <TabsTrigger value="principles">{t("organic.tabs.principles")}</TabsTrigger>
-          <TabsTrigger value="techniques">{t("organic.tabs.techniques")}</TabsTrigger>
-          <TabsTrigger value="benefits">{t("organic.tabs.benefits")}</TabsTrigger>
-          <TabsTrigger value="certification">{t("organic.tabs.certification")}</TabsTrigger>
-        </TabsList>
+        <Tabs defaultValue="principles" className="w-full">
+          <TabsList className="grid w-full grid-cols-4 h-auto p-2 bg-card shadow-lg">
+            <TabsTrigger value="principles" className="data-[state=active]:bg-success data-[state=active]:text-success-foreground">
+              <Sprout className="w-4 h-4 mr-2" />
+              Principles
+            </TabsTrigger>
+            <TabsTrigger value="techniques" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <Sparkles className="w-4 h-4 mr-2" />
+              Techniques
+            </TabsTrigger>
+            <TabsTrigger value="benefits" className="data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
+              <Heart className="w-4 h-4 mr-2" />
+              Benefits
+            </TabsTrigger>
+            <TabsTrigger value="certification" className="data-[state=active]:bg-warning data-[state=active]:text-warning-foreground">
+              <Award className="w-4 h-4 mr-2" />
+              Certifications
+            </TabsTrigger>
+          </TabsList>
 
-        <TabsContent value="principles" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>{t("organic.principles.header")}</CardTitle>
-              <CardDescription>{t("organic.principles.subheader")}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid md:grid-cols-2 gap-6">
-                {principles.map((principle, index) => (
-                  <div key={index} className="flex gap-4 p-4 rounded-lg bg-card border">
-                    <principle.icon className="w-12 h-12 text-success flex-shrink-0" />
-                    <div>
-                      <h3 className="font-semibold text-lg mb-2">{principle.title}</h3>
-                      <p className="text-muted-foreground">{principle.description}</p>
+          <TabsContent value="principles" className="space-y-6 mt-8">
+            <div className="grid md:grid-cols-2 gap-6">
+              {principles.map((principle, index) => (
+                <Card key={index} className="group hover:shadow-crop hover:scale-[1.02] transition-all duration-300 border-2 hover:border-success/50">
+                  <CardHeader>
+                    <div className="flex items-start gap-4">
+                      <div className="p-3 bg-success/10 rounded-lg">
+                        <principle.icon className="w-8 h-8 text-success" />
+                      </div>
+                      <div className="flex-1">
+                        <CardTitle className="text-xl mb-2">{principle.title}</CardTitle>
+                        <CardDescription className="text-base">{principle.description}</CardDescription>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-wrap gap-2">
+                      {principle.practices?.map((practice: string, i: number) => (
+                        <span key={i} className="px-3 py-1 bg-success/10 text-success rounded-full text-sm font-medium">
+                          {practice}
+                        </span>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="techniques" className="space-y-6 mt-8">
+            <div className="grid gap-6">
+              {techniques.map((technique, index) => (
+                <Card key={index} className="hover:shadow-harvest transition-all duration-300">
+                  <CardHeader>
+                    <div className="flex items-center gap-3 mb-3">
+                      <technique.icon className="w-7 h-7 text-primary" />
+                      <CardTitle className="text-2xl">{technique.title}</CardTitle>
+                    </div>
+                    <CardDescription className="text-base">{technique.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="mb-4">
+                      <h4 className="font-semibold text-sm mb-2">Steps:</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {technique.steps?.map((step: string, i: number) => (
+                          <div key={i} className="flex items-center gap-2 px-3 py-1.5 bg-muted rounded-lg text-sm">
+                            <span className="w-5 h-5 flex items-center justify-center bg-primary text-primary-foreground rounded-full text-xs font-bold">{i + 1}</span>
+                            {step}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="p-3 bg-accent/10 rounded-lg">
+                      <p className="text-sm font-medium">✨ Benefits: {technique.benefits}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="benefits" className="space-y-6 mt-8">
+            <div className="grid md:grid-cols-2 gap-6">
+              {benefits.map((benefit, index) => (
+                <Card key={index} className="hover:shadow-glow transition-all duration-300">
+                  <CardHeader>
+                    <div className="flex items-start gap-4">
+                      <benefit.icon className="w-10 h-10 text-accent" />
+                      <div className="flex-1">
+                        <CardTitle className="text-xl mb-2">{benefit.title}</CardTitle>
+                        <CardDescription className="text-base mb-3">{benefit.description}</CardDescription>
+                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-accent/20 rounded-full">
+                          <TrendingUp className="w-4 h-4" />
+                          <span className="font-bold">{benefit.value}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardHeader>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="certification" className="space-y-6 mt-8">
+            {certifications.map((cert, index) => (
+              <Card key={index} className="hover:shadow-harvest transition-all">
+                <CardHeader>
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-3">
+                        {cert.icon && <cert.icon className="w-8 h-8 text-warning" />}
+                        <CardTitle className="text-2xl">{cert.name}</CardTitle>
+                      </div>
+                      <CardDescription className="text-base">{cert.description}</CardDescription>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-sm font-semibold text-muted-foreground">Cost</div>
+                      <div className="text-lg font-bold text-warning">{cert.cost}</div>
+                      <div className="text-xs text-muted-foreground">{cert.validity}</div>
                     </div>
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="techniques" className="space-y-6">
-          {techniques.map((technique, index) => (
-            <Card key={index}>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Leaf className="w-6 h-6 text-success" />
-                  {technique.title}
-                </CardTitle>
-                <CardDescription>{technique.description}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <h4 className="font-semibold">{t("organic.steps")}:</h4>
-                  <ol className="space-y-2 list-decimal list-inside">
-                    {technique.steps.map((step, stepIndex) => (
-                      <li key={stepIndex} className="text-muted-foreground">{step}</li>
-                    ))}
-                  </ol>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </TabsContent>
-
-        <TabsContent value="benefits" className="space-y-6">
-          <div className="grid md:grid-cols-3 gap-6">
-            {benefits.map((benefit, index) => (
-              <Card key={index} className="text-center">
-                <CardHeader>
-                  <div className="flex justify-center mb-4">
-                    <benefit.icon className="w-16 h-16 text-success" />
-                  </div>
-                  <CardTitle>{benefit.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground">{benefit.description}</p>
+                  <h4 className="font-bold text-sm mb-3 flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-success" />
+                    Requirements:
+                  </h4>
+                  <ul className="space-y-2">
+                    {cert.requirements.map((req, i) => (
+                      <li key={i} className="flex items-start gap-3 text-sm">
+                        <span className="w-5 h-5 flex items-center justify-center bg-success/10 text-success rounded-full text-xs font-bold">{i + 1}</span>
+                        <span className="text-muted-foreground">{req}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </CardContent>
               </Card>
             ))}
-          </div>
-
-          <Card className="bg-success/5 border-success/20">
-            <CardHeader>
-              <CardTitle className="text-success">{t("organic.impact.title")}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2">
-                <li className="flex items-start gap-2">
-                  <Leaf className="w-5 h-5 text-success mt-0.5 flex-shrink-0" />
-                  <span>{t("organic.impact.point1")}</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <Leaf className="w-5 h-5 text-success mt-0.5 flex-shrink-0" />
-                  <span>{t("organic.impact.point2")}</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <Leaf className="w-5 h-5 text-success mt-0.5 flex-shrink-0" />
-                  <span>{t("organic.impact.point3")}</span>
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="certification" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>{t("organic.cert.header")}</CardTitle>
-              <CardDescription>{t("organic.cert.subheader")}</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {certifications.map((cert, index) => (
-                <div key={index} className="border-l-4 border-success pl-6 py-2">
-                  <div className="flex items-center gap-2 mb-2">
-                    <h3 className="text-xl font-semibold">{cert.name}</h3>
-                    <Badge variant="outline" className="text-success border-success">
-                      {t("organic.cert.official")}
-                    </Badge>
-                  </div>
-                  <p className="text-muted-foreground mb-4">{cert.description}</p>
-                  <div>
-                    <h4 className="font-semibold mb-2">{t("organic.cert.requirements")}:</h4>
-                    <ul className="space-y-1">
-                      {cert.requirements.map((req, reqIndex) => (
-                        <li key={reqIndex} className="flex items-start gap-2">
-                          <Shield className="w-4 h-4 text-success mt-1 flex-shrink-0" />
-                          <span className="text-muted-foreground">{req}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 };
