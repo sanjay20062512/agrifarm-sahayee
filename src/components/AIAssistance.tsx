@@ -1,11 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MessageCircle, Send, Bot, User, Brain, TrendingUp, Clock, MapPin } from "lucide-react";
-import { AgriAITwin } from "./AgriAITwin";
+import { MessageCircle, Send, Bot, User, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useLanguage } from "./LanguageContext";
+import { useToast } from "@/hooks/use-toast";
 
 interface Message {
   id: number;
@@ -15,266 +14,166 @@ interface Message {
 }
 
 export const AIAssistance = () => {
-  const { t } = useLanguage();
+  const { toast } = useToast();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
       type: "bot",
-      message: "🌾 Namaste! I'm your AI Farming Assistant with live data from 585+ Indian markets. I can help with:\n\n💰 Real-time crop prices\n🌦️ Weather forecasts\n🌱 Crop recommendations\n🐛 Disease diagnosis\n📊 Soil analysis\n\nWhat would you like to know?",
+      message: "🌾 Namaste! I'm your AI Farming Assistant powered by advanced AI. I can help with:\n\n💰 Crop prices and market trends\n🌦️ Weather-based advice\n🌱 Crop recommendations\n🐛 Disease diagnosis\n📊 Soil management\n🌿 Organic farming tips\n💼 Government schemes\n\nAsk me anything about farming!",
       timestamp: new Date()
     }
   ]);
   const [newMessage, setNewMessage] = useState("");
-  const [showAITwin, setShowAITwin] = useState(false);
-  const [marketPrices, setMarketPrices] = useState<any[]>([]);
-  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    fetchRealtimeData();
-    
-    // Update data every 5 minutes
-    const interval = setInterval(fetchRealtimeData, 5 * 60 * 1000);
-    
-    return () => clearInterval(interval);
-  }, []);
+  const handleSendMessage = async () => {
+    if (newMessage.trim() === "" || isLoading) return;
 
-  const fetchRealtimeData = async () => {
-    try {
-      const { data: prices } = await supabase
-        .from('market_prices')
-        .select('*')
-        .order('updated_at', { ascending: false })
-        .limit(50);
-
-      setMarketPrices(prices || []);
-      setLastUpdated(new Date());
-    } catch (error) {
-      console.error('Error fetching real-time data:', error);
-    }
-  };
-
-  const getAIResponse = (question: string): string => {
-    const lowerQuestion = question.toLowerCase();
-    
-    // Enhanced market price detection with real-time data
-    if (lowerQuestion.includes('price') || lowerQuestion.includes('market') || lowerQuestion.includes('rate')) {
-      // Check for location-specific queries
-      const locationMatches = lowerQuestion.match(/(erode|coimbatore|madurai|salem|chennai|delhi|mumbai|pune|bangalore|hyderabad|kolkata|ahmedabad|jaipur|lucknow|kanpur|nagpur|indore|bhopal|kochi|thiruvananthapuram|visakhapatnam|vijayawada|guntur|nashik|aurangabad|solapur|rajkot|surat|vadodara|bhavnagar|amritsar|jalandhar|ludhiana|chandigarh|patna|gaya|muzaffarpur|darbhanga|raipur|bilaspur|bhubaneswar|cuttack|guwahati|shillong|agartala|imphal)/);
-      
-      // Check for crop mentions
-      const cropMatches = lowerQuestion.match(/(potato|tomato|onion|rice|wheat|cotton|sugarcane|groundnut|soybean|mustard|sunflower|maize|bajra|jowar|tur|chana|masoor|moong|urad|sesame|castor|turmeric|coriander|cumin|fenugreek|fennel|chili|papaya|banana|mango|grapes|pomegranate|orange|apple|guava|coconut|areca|cardamom|pepper|ginger|garlic|cauliflower|cabbage|brinjal|okra|beans|peas)/);
-      
-      if (locationMatches && cropMatches) {
-        const location = locationMatches[0];
-        const crop = cropMatches[0];
-        
-        // Find real-time price data
-        const realtimePrice = marketPrices.find(p => 
-          p.crop_name.toLowerCase().includes(crop) && 
-          p.location.toLowerCase().includes(location)
-        );
-        
-        if (realtimePrice) {
-          const priceDate = new Date(realtimePrice.updated_at);
-          const timeAgo = Math.floor((Date.now() - priceDate.getTime()) / (1000 * 60 * 60));
-          
-          return `🔴 **LIVE MARKET DATA** for ${crop} in ${location}:\n\n📊 **Current Rate:** ₹${realtimePrice.price_per_kg}/kg (₹${realtimePrice.price_per_quintal}/quintal)\n🏪 **Market:** ${realtimePrice.market_name}\n⭐ **Grade:** ${realtimePrice.quality_grade}\n📈 **Trend:** ${Math.random() > 0.5 ? 'Rising (+8%)' : 'Stable (-1%)'}\n💡 **AI Recommendation:** ${realtimePrice.price_per_kg > 30 ? '🔥 Excellent selling opportunity - prices are high!' : '📊 Fair prices - consider selling gradually'}\n🚛 **Transport:** ₹${Math.floor(realtimePrice.price_per_kg * 0.1)}/kg estimated\n\n⏰ *Last updated: ${timeAgo < 1 ? 'Just now' : timeAgo + ' hours ago'}*\n🌤️ *Weather favorable for transport and storage*`;
-        } else {
-          return `Current market analysis for ${crop} in ${location}:\n\n📊 **Today's Mandi Rate:** ₹${Math.floor(Math.random() * 50 + 20)}-${Math.floor(Math.random() * 50 + 40)}/kg\n📈 **Weekly Trend:** ${Math.random() > 0.5 ? 'Rising (+12%)' : 'Stable (-2%)'}\n🏪 **Best Markets:** ${location} APMC, ${location} Wholesale Market\n💡 **AI Suggestion:** ${Math.random() > 0.5 ? 'Hold for 3-5 days, prices expected to rise due to festival demand' : 'Sell immediately, heavy arrivals expected next week'}\n🚛 **Transport Cost:** ₹${Math.floor(Math.random() * 10 + 5)}/kg to nearest market\n📱 **Live Updates:** Real-time data being fetched...\n\n*Data updated ${lastUpdated.toLocaleTimeString()}*`;
-        }
-      } else if (cropMatches) {
-        const crop = cropMatches[0];
-        const cropPrices = marketPrices.filter(p => 
-          p.crop_name.toLowerCase().includes(crop)
-        ).slice(0, 5);
-        
-        if (cropPrices.length > 0) {
-          const avgPrice = cropPrices.reduce((sum, p) => sum + p.price_per_kg, 0) / cropPrices.length;
-          const marketsText = cropPrices.map(p => `${p.location} (₹${p.price_per_kg})`).join(', ');
-          
-          return `🔴 **LIVE MARKET DATA** for ${crop}:\n\n💰 **National Average:** ₹${avgPrice.toFixed(2)}/kg\n📍 **Top Markets:** ${marketsText}\n📊 **Range:** ₹${Math.min(...cropPrices.map(p => p.price_per_kg))}-₹${Math.max(...cropPrices.map(p => p.price_per_kg))}/kg\n🎯 **Demand:** ${avgPrice > 30 ? 'High demand in urban markets' : 'Moderate seasonal demand'}\n\n⏰ *Real-time data updated: ${lastUpdated.toLocaleTimeString()}*\nProvide your location for hyper-local transport costs!`;
-        } else {
-          return `National market overview for ${crop}:\n\n💰 **Average Price:** ₹${Math.floor(Math.random() * 40 + 25)}/kg\n📍 **Top Markets:** Delhi (₹${Math.floor(Math.random() * 50 + 30)}), Mumbai (₹${Math.floor(Math.random() * 50 + 35)}), Kolkata (₹${Math.floor(Math.random() * 50 + 25)})\n🎯 **Peak Season:** ${Math.random() > 0.5 ? 'Starting next month' : 'Current month'}\n📊 **Demand:** ${Math.random() > 0.5 ? 'High in urban markets' : 'Moderate, seasonal demand'}\nProvide your location for hyper-local rates!`;
-        }
-      } else {
-        const recentPrices = marketPrices.slice(0, 3);
-        const pricesText = recentPrices.map(p => 
-          `• ${p.crop_name} in ${p.location}: ₹${p.price_per_kg}/kg`
-        ).join('\n');
-        
-        return `📊 **Real-Time Market Intelligence**\n\n🔴 **LIVE PRICES** (Updated ${lastUpdated.toLocaleTimeString()}):\n${pricesText}\n\n💡 **Ask me specifically:**\n• 'Current price of potato in Erode'\n• 'Market rate for onions in Delhi'\n• 'Tomato prices in Pune today'\n\n✅ **Features:**\n🔴 Live data from ${marketPrices.length} markets\n🚛 Transport cost calculations\n🤖 AI-powered selling strategies\n🌤️ Weather impact analysis\n📈 Price trend predictions\n\nWhich crop and location interests you?`;
-      }
-    }
-    
-    if (lowerQuestion.includes('pest') || lowerQuestion.includes('insect')) {
-      return "🐛 **Advanced Pest Management System**\n\n🔍 **Identification Guide:**\n• Aphids → Tiny green/black insects on new growth\n• Thrips → Silver/white streaks on leaves\n• Caterpillars → Holes in leaves, visible larvae\n• Whiteflies → Small white flying insects\n\n🌿 **Organic Solutions:**\n• Neem oil spray (2ml/L) - evening application\n• Pheromone traps for monitoring\n• Beneficial insects: Ladybugs, Lacewings\n• Soap spray (5ml/L) for soft-bodied insects\n\n⚗️ **Chemical Options:**\n• Imidacloprid 17.8% SL - 0.3ml/L (Systemic)\n• Chlorpyrifos 20% EC - 2ml/L (Contact)\n• Emamectin benzoate - 0.4g/L (Caterpillars)\n\n📅 **Spray Schedule:** Every 7-10 days, alternate chemical & organic\n\nWhat specific pest are you dealing with? Share a photo for accurate identification!";
-    }
-    
-    if (lowerQuestion.includes('fertilizer') || lowerQuestion.includes('nutrient')) {
-      return "🌱 **Smart Nutrition Management**\n\n🧪 **Soil Test First!** - Contact your nearest Krishi Vigyan Kendra\n\n📊 **NPK Requirements by Growth Stage:**\n• **Vegetative:** N-P-K ratio 4:2:1 (Use Urea 46% N)\n• **Flowering:** N-P-K ratio 1:3:2 (Use DAP 18:46:0)\n• **Fruiting:** N-P-K ratio 1:2:3 (Use MOP 0:0:60)\n\n🌿 **Organic Alternatives:**\n• Vermicompost: 2-3 tons/hectare\n• Poultry manure: 5-6 tons/hectare  \n• Green manure: Dhaincha/Sunhemp\n• Biofertilizers: Rhizobium, PSB, KSB\n\n⏰ **Application Schedule:**\n• Basal dose: 50% N + full P&K at sowing\n• Top dress: 25% N at 30 DAS, 25% N at 60 DAS\n\n💡 **Pro Tips:**\n• Apply in evening or cloudy weather\n• Water immediately after application\n• Mix fertilizers with soil, don't broadcast\n\nWhich crop and stage are you fertilizing?";
-    }
-    
-    if (lowerQuestion.includes('disease') || lowerQuestion.includes('fungus') || lowerQuestion.includes('blight') || lowerQuestion.includes('rot')) {
-      return "🦠 **Disease Diagnostic & Treatment Center**\n\n🔬 **Common Diseases by Symptoms:**\n• **Brown spots + yellow halo** → Bacterial blight\n• **White powdery coating** → Powdery mildew  \n• **Dark lesions + target spots** → Early blight\n• **Water-soaked patches** → Late blight\n• **Yellowing + wilting** → Fusarium wilt\n\n💊 **Treatment Protocols:**\n\n**Fungal Diseases:**\n• Mancozeb 75% WP - 2g/L (Preventive)\n• Propiconazole 25% EC - 1ml/L (Curative)\n• Copper oxychloride 50% WP - 3g/L\n\n**Bacterial Diseases:**\n• Streptocyclin 500ppm - 0.5g/L\n• Copper hydroxide 77% WP - 3g/L\n• Kasugamycin 3% SL - 2ml/L\n\n**Viral Diseases:**\n• Remove infected plants immediately\n• Control vector insects (aphids/whiteflies)\n• Use virus-free seeds\n\n🌿 **Organic Options:**\n• Trichoderma viride - 5g/L\n• Pseudomonas fluorescens - 10g/L\n• Neem cake application in soil\n\n📸 Upload a clear photo of symptoms for accurate diagnosis!";
-    }
-    
-    if (lowerQuestion.includes('water') || lowerQuestion.includes('irrigation') || lowerQuestion.includes('drip') || lowerQuestion.includes('sprinkler')) {
-      return "💧 **Precision Irrigation Management**\n\n🎯 **Critical Growth Stages (Water Requirement):**\n• Germination: Light, frequent watering\n• Vegetative: Moderate, consistent moisture\n• Flowering: High water need, avoid stress\n• Fruit development: Peak requirement\n• Maturity: Reduce gradually\n\n🚿 **Irrigation Systems Comparison:**\n• **Drip:** 90% efficiency, saves 30-50% water\n• **Sprinkler:** 75% efficiency, good for field crops\n• **Flood:** 40% efficiency, traditional method\n• **Micro-sprinkler:** 80% efficiency, ideal for orchards\n\n📏 **Water Requirement Calculation:**\n• Check soil moisture at 6-8 inch depth\n• Water when 50% available moisture is depleted\n• Apply 25-40mm per irrigation\n\n⏰ **Optimal Timing:**\n• Morning: 6-8 AM (best absorption)\n• Evening: 4-6 PM (less evaporation)\n• Avoid midday watering\n\n🌡️ **Weather-Based Adjustments:**\n• Reduce frequency during monsoon\n• Increase during hot, dry periods\n• Check 7-day forecast before irrigation\n\nWhat's your current irrigation setup and crop type?";
-    }
-    
-    if (lowerQuestion.includes('seed') || lowerQuestion.includes('variety') || lowerQuestion.includes('hybrid')) {
-      return "🌾 **Seed Selection & Variety Guide**\n\n✅ **Certified Seed Benefits:**\n• 15-25% higher yield\n• Disease resistance\n• Uniform maturity\n• Genetic purity guarantee\n\n🏆 **Variety Types:**\n• **Hybrids:** High yield, can't save seeds, F1 vigor\n• **HYVs:** Improved varieties, moderate yield\n• **Local:** Climate adapted, can save seeds\n• **Organic:** Non-GMO, suitable for organic farming\n\n🌡️ **Climate Considerations:**\n• **Hot regions:** Heat-tolerant varieties\n• **Cold areas:** Cold-resistant types\n• **Rain-fed:** Drought-tolerant varieties\n• **Irrigated:** High-yielding hybrids\n\n🛡️ **Seed Treatment (Essential):**\n• Fungicide: Thiram/Captan 2-3g/kg seed\n• Insecticide: Imidacloprid 5ml/kg seed\n• Bio-agents: Trichoderma 4g/kg seed\n• Rhizobium for legumes: 20g/kg seed\n\n📦 **Storage Tips:**\n• Moisture content below 8%\n• Cool, dry place (below 20°C)\n• Use airtight containers\n• Check viability every 6 months\n\nWhich crop variety are you selecting? Share your location for recommendations!";
-    }
-    
-    if (lowerQuestion.includes('soil') || lowerQuestion.includes('ph') || lowerQuestion.includes('testing')) {
-      return "🌍 **Comprehensive Soil Health Management**\n\n🧪 **Soil Testing Protocol:**\n• **When:** Before sowing season\n• **Where:** Collect from 15-20 random spots\n• **Depth:** 0-15cm for most crops\n• **Cost:** ₹50-100 at govt labs\n• **Parameters:** pH, EC, OC, NPK, micronutrients\n\n📊 **pH Management:**\n• **Acidic (pH <6.5):** Add lime 200-500kg/hectare\n• **Alkaline (pH >8.0):** Apply gypsum 500kg/hectare\n• **Optimal range:** 6.0-7.5 for most crops\n\n🌱 **Organic Matter Enhancement:**\n• Target: 1.5-2.0% organic carbon\n• FYM: 10-15 tons/hectare annually\n• Vermicompost: 5 tons/hectare\n• Green manuring: Dhaincha/Sunhemp\n\n⚡ **Soil Structure Improvement:**\n• Deep plowing once a year\n• Avoid tillage when wet\n• Use cover crops\n• Maintain crop residues\n\n🔄 **Crop Rotation Benefits:**\n• Breaks pest/disease cycles\n• Improves soil fertility\n• Reduces chemical dependency\n• Example: Rice-Wheat-Legume rotation\n\n📍 **Find Nearest Soil Testing Lab:**\nVisit: soilhealth.dac.gov.in\n\nWhen did you last test your soil? Share your location for lab recommendations!";
-    }
-    
-    if (lowerQuestion.includes('organic') || lowerQuestion.includes('natural') || lowerQuestion.includes('bio')) {
-      return "🌿 **Complete Organic Farming Guide**\n\n🎯 **Transition Timeline:**\n• **Year 1:** Reduce chemicals by 50%, increase organic matter\n• **Year 2:** Minimal chemical use, establish beneficial organisms\n• **Year 3:** Fully organic, certification eligible\n\n🌱 **Organic Nutrition Program:**\n• **Base:** FYM/Compost 10-15 tons/hectare\n• **Quick release:** Vermicompost 2-3 tons/hectare\n• **Liquid feed:** Panchagavya/Jeevamrita weekly\n• **Micronutrients:** Seaweed extract monthly\n\n🐛 **Natural Pest Control:**\n• **Neem-based:** Azadirachtin 1500ppm\n• **Botanical:** Karanj, Mahua extracts\n• **Microbials:** Bt, NPV, Beauveria bassiana\n• **Traps:** Pheromone, yellow sticky traps\n\n🦠 **Disease Management:**\n• **Preventive:** Trichoderma soil application\n• **Curative:** Pseudomonas foliar spray\n• **Copper-based:** Allowed in organic (limited use)\n\n💰 **Economics:**\n• **Input cost:** 30-40% lower than chemical\n• **Premium price:** 20-30% more than conventional\n• **Certification cost:** ₹15,000-25,000 annually\n\n📜 **Certification Bodies:**\n• NPOP (National Program)\n• USDA Organic\n• EU Organic\n• Participatory Guarantee System (PGS)\n\nWhich aspect of organic farming interests you most?";
-    }
-    
-    if (lowerQuestion.includes('weather') || lowerQuestion.includes('rain') || lowerQuestion.includes('forecast')) {
-      return "🌤️ **Weather-Smart Farming Dashboard**\n\n📱 **Essential Weather Apps:**\n• **IMD (Official):** 7-day accurate forecast\n• **Meghdoot:** Crop-specific advisories\n• **Krishi Vigyan:** Location-based alerts\n• **Private:** Skymet, AccuWeather\n\n⛈️ **Pre-Rain Actions (24-48 hrs):**\n• Postpone all spraying operations\n• Harvest mature crops if possible\n• Provide drainage in low-lying areas\n• Cover stored produce\n• Check farm equipment\n\n☀️ **Post-Rain Management:**\n• Wait 24-48 hrs before entering field\n• Check for waterlogging damage\n• Apply fungicides to prevent diseases\n• Side-dress nitrogen if washed away\n\n🌡️ **Temperature Alerts:**\n• **Heat wave (>40°C):** Increase irrigation, provide shade\n• **Cold wave (<10°C):** Cover sensitive crops\n• **Frost:** Use smoke/sprinklers for protection\n\n💨 **Wind Speed Monitoring:**\n• **>25 kmph:** Avoid spraying operations\n• **>40 kmph:** Provide crop support\n• **>60 kmph:** Harvest if near maturity\n\n🎯 **Critical Growth Stage Alerts:**\n• Flowering: Avoid stress conditions\n• Pollination: Monitor temperature & humidity\n• Grain filling: Ensure adequate moisture\n\n📊 **Weather Parameters to Track:**\n• Temperature (max/min)\n• Humidity levels\n• Wind speed & direction\n• Rainfall amount & intensity\n• Solar radiation\n\nShare your location for localized weather advisories!";
-    }
-    
-    return `🔴 **LIVE AgriAI Assistant** - Auto-Updated Every 5 Minutes\n\n🤖 **Real-Time Intelligence** (Last updated: ${lastUpdated.toLocaleTimeString()}):\n• ${marketPrices.length} live market prices\n• Weather data from 200+ stations\n• Government scheme updates\n• Pest/disease alerts\n\n🌾 **Instant Help With:**\n\n💰 **Live Market Data:**\n• Real-time prices from 585+ mandis\n• Transport cost calculations\n• AI selling recommendations\n• Festival demand predictions\n\n🌱 **Crop Intelligence:**\n• Variety selection for your soil/climate\n• Growth stage monitoring\n• Harvest timing optimization\n• Disease/pest early warnings\n\n💧 **Smart Farming:**\n• Weather-based irrigation alerts\n• Fertilizer schedules\n• Soil health monitoring\n• Precision agriculture guidance\n\n🏛️ **Government Support:**\n• Live scheme eligibility\n• Subsidy calculations\n• Application assistance\n• Insurance claim guidance\n\n**Try these commands:**\n• 'Live tomato prices in Pune'\n• 'Weather alert for wheat harvest'\n• 'Best fertilizer for clay soil cotton'\n• 'Government schemes for drip irrigation'\n\n*🔴 LIVE data from 585+ mandis, 200+ weather stations, updated automatically*`;
-  };
-
-  const handleSendMessage = () => {
-    if (!newMessage.trim()) return;
-
-    const userMessage = {
+    const userMessage: Message = {
       id: messages.length + 1,
-      type: "user" as const,
+      type: "user",
       message: newMessage,
       timestamp: new Date()
     };
 
-    const botResponse = {
-      id: messages.length + 2,
-      type: "bot" as const,
-      message: getAIResponse(newMessage),
-      timestamp: new Date()
-    };
-
-    setMessages(prev => [...prev, userMessage, botResponse]);
+    setMessages(prev => [...prev, userMessage]);
     setNewMessage("");
+    setIsLoading(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('ai-assistance', {
+        body: { 
+          question: newMessage,
+          context: `You are helping a farmer in India. Provide practical, actionable advice.`
+        }
+      });
+
+      if (error) {
+        console.error('AI assistance error:', error);
+        throw error;
+      }
+
+      const botMessage: Message = {
+        id: messages.length + 2,
+        type: "bot",
+        message: data.answer || "I'm sorry, I couldn't process that request. Please try again.",
+        timestamp: new Date()
+      };
+
+      setMessages(prev => [...prev, botMessage]);
+    } catch (error: any) {
+      console.error('Error calling AI assistance:', error);
+      
+      let errorMessage = "I'm having trouble connecting right now. Please try again.";
+      
+      if (error.message?.includes('429')) {
+        errorMessage = "Too many requests. Please wait a moment and try again.";
+      } else if (error.message?.includes('402')) {
+        errorMessage = "AI service temporarily unavailable. Please try again later.";
+      }
+
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive"
+      });
+
+      const errorBotMessage: Message = {
+        id: messages.length + 2,
+        type: "bot",
+        message: errorMessage,
+        timestamp: new Date()
+      };
+
+      setMessages(prev => [...prev, errorBotMessage]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const quickQuestions = [
-    "How to control aphids organically?",
-    "Best fertilizer for vegetative growth?",
-    "Fungal disease treatment methods",
-    "Water management in drip irrigation",
-    "Market price trends for tomatoes",
-    "Organic pest control methods",
-    "Soil pH management techniques",
-    "Weather-based farming decisions"
-  ];
-
-  if (showAITwin) {
-    return <AgriAITwin />;
-  }
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
 
   return (
-    <div className="space-y-6">
-      <div className="text-center space-y-2">
-        <h2 className="text-3xl font-bold text-foreground flex items-center justify-center gap-2">
-          <MessageCircle className="w-8 h-8 text-primary" />
-          AI Farming Assistant
-        </h2>
-        <p className="text-muted-foreground">
-          Real-time data from {marketPrices.length} markets • Auto-updated • Tamil & English
-        </p>
-        <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
-          <div className="flex items-center gap-1">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            <span>Live Market Data</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Clock className="w-3 h-3" />
-            <span>Updated: {lastUpdated.toLocaleTimeString()}</span>
-          </div>
-        </div>
-        <Button 
-          onClick={() => setShowAITwin(true)}
-          variant="outline"
-          size="lg"
-          className="mt-4 bg-gradient-to-r from-primary/10 to-accent/10 hover:from-primary/20 hover:to-accent/20"
-        >
-          <Brain className="w-5 h-5 mr-2" />
-          Launch Agri AI Twin
-        </Button>
-      </div>
-
-      <Card className="max-w-4xl mx-auto">
-        <CardHeader>
-          <CardTitle>Chat with AgriAI</CardTitle>
+    <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <Card className="shadow-lg border-primary/20">
+        <CardHeader className="bg-gradient-to-r from-primary/10 to-secondary/10">
+          <CardTitle className="flex items-center gap-2 text-2xl">
+            <MessageCircle className="h-6 w-6 text-primary" />
+            AI Farming Assistant
+          </CardTitle>
           <CardDescription>
-            Get instant answers to your farming questions
+            Get instant answers powered by advanced AI. Ask about crops, diseases, weather, markets, and more.
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          {/* Chat Messages */}
-          <div className="h-96 overflow-y-auto space-y-3 border rounded-lg p-4 bg-muted/30">
+        <CardContent className="p-6">
+          <div className="space-y-4 mb-6 h-[500px] overflow-y-auto rounded-lg border p-4 bg-muted/30">
             {messages.map((msg) => (
-              <div 
-                key={msg.id} 
-                className={`flex items-start gap-3 ${msg.type === 'user' ? 'flex-row-reverse' : ''}`}
+              <div
+                key={msg.id}
+                className={`flex gap-3 ${msg.type === "user" ? "justify-end" : "justify-start"}`}
               >
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                  msg.type === 'bot' ? 'bg-primary text-primary-foreground' : 'bg-accent text-accent-foreground'
-                }`}>
-                  {msg.type === 'bot' ? <Bot className="w-4 h-4" /> : <User className="w-4 h-4" />}
-                </div>
-                <div className={`max-w-[70%] p-3 rounded-lg ${
-                  msg.type === 'bot' 
-                    ? 'bg-card text-card-foreground' 
-                    : 'bg-primary text-primary-foreground'
-                }`}>
-                  <p className="text-sm">{msg.message}</p>
-                  <span className="text-xs opacity-70 mt-1 block">
-                    {msg.timestamp.toLocaleTimeString()}
-                  </span>
+                <div className={`flex gap-3 max-w-[80%] ${msg.type === "user" ? "flex-row-reverse" : "flex-row"}`}>
+                  <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+                    msg.type === "bot" ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"
+                  }`}>
+                    {msg.type === "bot" ? <Bot className="h-5 w-5" /> : <User className="h-5 w-5" />}
+                  </div>
+                  <div
+                    className={`rounded-lg p-4 ${
+                      msg.type === "bot"
+                        ? "bg-card border border-border"
+                        : "bg-primary text-primary-foreground"
+                    }`}
+                  >
+                    <p className="text-sm whitespace-pre-line">{msg.message}</p>
+                    <p className={`text-xs mt-2 ${msg.type === "bot" ? "text-muted-foreground" : "text-primary-foreground/70"}`}>
+                      {msg.timestamp.toLocaleTimeString()}
+                    </p>
+                  </div>
                 </div>
               </div>
             ))}
+            {isLoading && (
+              <div className="flex gap-3 justify-start">
+                <div className="flex gap-3 max-w-[80%]">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-primary text-primary-foreground">
+                    <Bot className="h-5 w-5" />
+                  </div>
+                  <div className="rounded-lg p-4 bg-card border border-border">
+                    <div className="flex items-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <p className="text-sm text-muted-foreground">Thinking...</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* Quick Questions */}
-          <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">Quick questions:</p>
-            <div className="flex flex-wrap gap-2">
-              {quickQuestions.map((question, index) => (
-                <Button
-                  key={index}
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setNewMessage(question)}
-                  className="text-xs"
-                >
-                  {question}
-                </Button>
-              ))}
-            </div>
-          </div>
-
-          {/* Message Input */}
           <div className="flex gap-2">
             <Input
-              placeholder="Ask your farming question here..."
+              placeholder="Ask about crops, diseases, prices, weather..."
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+              onKeyPress={handleKeyPress}
+              disabled={isLoading}
               className="flex-1"
             />
             <Button 
               onClick={handleSendMessage}
-              variant="nav"
-              disabled={!newMessage.trim()}
+              disabled={isLoading || !newMessage.trim()}
+              size="icon"
             >
-              <Send className="w-4 h-4" />
+              {isLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Send className="h-4 w-4" />
+              )}
             </Button>
           </div>
         </CardContent>
