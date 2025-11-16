@@ -22,3 +22,9 @@ verify_jwt = false
 
 [functions.delete-forum-post]
 verify_jwt = false
+
+[functions.ai-assistance]
+verify_jwt = false
+
+[functions.disease-detection]
+verify_jwt = false
