@@ -6,7 +6,6 @@ import { EnhancedCropRecommendation } from "@/components/EnhancedCropRecommendat
 import { CropGuide } from "@/components/CropGuide";
 import { EnhancedDailySchedule } from "@/components/EnhancedDailySchedule";
 import { EnhancedFarmerForum } from "@/components/enhanced/EnhancedFarmerForum";
-import { EnhancedFarmerForum } from "@/components/enhanced/EnhancedFarmerForum";
 import { AIAssistance } from "@/components/AIAssistance";
 import { DiseaseDetector } from "@/components/DiseaseDetector";
 import { GovernmentSchemes } from "@/components/GovernmentSchemes";
