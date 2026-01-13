@@ -194,4 +194,3 @@ Please provide a detailed diagnosis and treatment plan.`;
     });
   }
 });
-});
