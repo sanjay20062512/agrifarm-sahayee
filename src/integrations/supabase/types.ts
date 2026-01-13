@@ -899,6 +899,90 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          age: number | null
+          created_at: string
+          crops_grown: string[] | null
+          district: string | null
+          email: string | null
+          farm_size: number | null
+          farm_unit: string | null
+          farming_type: string | null
+          full_name: string
+          gender: string | null
+          id: string
+          mobile_number: string | null
+          notifications_enabled: boolean | null
+          preferred_language: string | null
+          profile_photo: string | null
+          state: string | null
+          total_crop_recommendations: number | null
+          total_disease_checks: number | null
+          total_learning_accessed: number | null
+          total_machinery_booked: number | null
+          total_schemes_viewed: number | null
+          updated_at: string
+          user_id: string
+          village: string | null
+          voice_assistant_enabled: boolean | null
+        }
+        Insert: {
+          age?: number | null
+          created_at?: string
+          crops_grown?: string[] | null
+          district?: string | null
+          email?: string | null
+          farm_size?: number | null
+          farm_unit?: string | null
+          farming_type?: string | null
+          full_name: string
+          gender?: string | null
+          id?: string
+          mobile_number?: string | null
+          notifications_enabled?: boolean | null
+          preferred_language?: string | null
+          profile_photo?: string | null
+          state?: string | null
+          total_crop_recommendations?: number | null
+          total_disease_checks?: number | null
+          total_learning_accessed?: number | null
+          total_machinery_booked?: number | null
+          total_schemes_viewed?: number | null
+          updated_at?: string
+          user_id: string
+          village?: string | null
+          voice_assistant_enabled?: boolean | null
+        }
+        Update: {
+          age?: number | null
+          created_at?: string
+          crops_grown?: string[] | null
+          district?: string | null
+          email?: string | null
+          farm_size?: number | null
+          farm_unit?: string | null
+          farming_type?: string | null
+          full_name?: string
+          gender?: string | null
+          id?: string
+          mobile_number?: string | null
+          notifications_enabled?: boolean | null
+          preferred_language?: string | null
+          profile_photo?: string | null
+          state?: string | null
+          total_crop_recommendations?: number | null
+          total_disease_checks?: number | null
+          total_learning_accessed?: number | null
+          total_machinery_booked?: number | null
+          total_schemes_viewed?: number | null
+          updated_at?: string
+          user_id?: string
+          village?: string | null
+          voice_assistant_enabled?: boolean | null
+        }
+        Relationships: []
+      }
       reviews: {
         Row: {
           booking_id: string | null
