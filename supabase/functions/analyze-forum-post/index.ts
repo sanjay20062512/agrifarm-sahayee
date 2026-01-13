@@ -7,13 +7,100 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Simple in-memory rate limiting
+const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
+const RATE_LIMIT = 5; // requests per minute
+const RATE_LIMIT_WINDOW = 60 * 1000;
+
+function checkRateLimit(identifier: string): { allowed: boolean; remaining: number } {
+  const now = Date.now();
+  const record = rateLimitMap.get(identifier);
+  
+  if (!record || now > record.resetTime) {
+    rateLimitMap.set(identifier, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
+    return { allowed: true, remaining: RATE_LIMIT - 1 };
+  }
+  
+  if (record.count >= RATE_LIMIT) {
+    return { allowed: false, remaining: 0 };
+  }
+  
+  record.count++;
+  return { allowed: true, remaining: RATE_LIMIT - record.count };
+}
+
+function getClientIdentifier(req: Request): string {
+  const forwardedFor = req.headers.get('x-forwarded-for');
+  const authHeader = req.headers.get('authorization');
+  
+  if (authHeader) {
+    return `auth:${authHeader.slice(-20)}`;
+  }
+  
+  return `ip:${forwardedFor?.split(',')[0] || 'unknown'}`;
+}
+
+// Input validation
+function validateInput(postId: string, title: string, content: string, category: string): { valid: boolean; error?: string } {
+  // Validate postId format (UUID)
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  if (!postId || !uuidRegex.test(postId)) {
+    return { valid: false, error: 'Invalid post ID format' };
+  }
+  
+  if (!title || typeof title !== 'string' || title.length < 3) {
+    return { valid: false, error: 'Title must be at least 3 characters' };
+  }
+  
+  if (title.length > 200) {
+    return { valid: false, error: 'Title must not exceed 200 characters' };
+  }
+  
+  if (!content || typeof content !== 'string' || content.length < 10) {
+    return { valid: false, error: 'Content must be at least 10 characters' };
+  }
+  
+  if (content.length > 5000) {
+    return { valid: false, error: 'Content must not exceed 5000 characters' };
+  }
+  
+  if (!category || typeof category !== 'string') {
+    return { valid: false, error: 'Category is required' };
+  }
+  
+  return { valid: true };
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    // Rate limiting
+    const clientId = getClientIdentifier(req);
+    const rateLimit = checkRateLimit(clientId);
+    
+    if (!rateLimit.allowed) {
+      return new Response(JSON.stringify({ 
+        error: 'Rate limit exceeded. Please wait before analyzing another post.',
+        retryAfter: 60
+      }), {
+        status: 429,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json', 'Retry-After': '60' },
+      });
+    }
+
     const { postId, title, content, category } = await req.json();
+    
+    // Validate inputs
+    const validation = validateInput(postId, title, content, category);
+    if (!validation.valid) {
+      return new Response(JSON.stringify({ error: validation.error }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
     
     const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
     if (!openAIApiKey) {
@@ -24,6 +111,20 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
+
+    // Verify post exists before processing
+    const { data: existingPost, error: fetchError } = await supabase
+      .from('forum_posts')
+      .select('id')
+      .eq('id', postId)
+      .single();
+
+    if (fetchError || !existingPost) {
+      return new Response(JSON.stringify({ error: 'Post not found' }), {
+        status: 404,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
 
     // Call OpenAI API for analysis
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -57,6 +158,12 @@ serve(async (req) => {
         max_tokens: 800,
       }),
     });
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+      console.error('OpenAI API error:', response.status, errorBody);
+      throw new Error('Failed to get AI analysis');
+    }
 
     const data = await response.json();
     const aiResponse = data.choices[0].message.content;
