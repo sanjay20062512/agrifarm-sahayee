@@ -14,6 +14,7 @@ import { EnhancedLaborHiring } from "@/components/enhanced/EnhancedLaborHiring";
 import { EnhancedMachineryRental } from "@/components/enhanced/EnhancedMachineryRental";
 import { Learning } from "@/components/Learning";
 import { OrganicFarming } from "@/components/OrganicFarming";
+import { VoiceAssistant } from "@/components/VoiceAssistant";
 import { LanguageProvider } from "@/components/LanguageContext";
 
 interface FormData {
@@ -156,6 +157,12 @@ const Index = () => {
         return <Learning />;
       case "organic-farming":
         return <OrganicFarming />;
+      case "voice-assistant":
+        return (
+          <div className="container mx-auto px-4 py-8">
+            <VoiceAssistant onNavigate={setActiveTab} />
+          </div>
+        );
       default:
         return <HeroSection onGetStarted={handleGetStarted} />;
     }
