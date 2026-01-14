@@ -10,7 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/components/LanguageContext';
 import { Leaf, Loader2, Globe, ArrowLeft, ArrowRight, Check } from 'lucide-react';
-import { stateDistrictClimateData } from '@/data/stateDistrictClimate';
+import { stateDistrictClimate } from '@/data/stateDistrictClimate';
 
 const cropOptions = [
   'Rice', 'Wheat', 'Cotton', 'Sugarcane', 'Groundnut', 
@@ -48,8 +48,8 @@ export const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [acceptTerms, setAcceptTerms] = useState(false);
 
-  const states = Object.keys(stateDistrictClimateData);
-  const districts = state ? stateDistrictClimateData[state]?.districts || [] : [];
+  const states = Object.keys(stateDistrictClimate);
+  const districts = state ? Object.keys(stateDistrictClimate[state] || {}) : [];
 
   const toggleCrop = (crop: string) => {
     setCropsGrown(prev => 
