@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { 
   Leaf, 
   Users, 
@@ -11,9 +12,22 @@ import {
   Menu,
   X,
   Globe,
-  BookOpen
+  User,
+  LogIn,
+  LogOut,
+  Mic
 } from "lucide-react";
 import { useLanguage } from "./LanguageContext";
+import { useAuth } from "@/hooks/useAuth";
+import { NotificationBell } from "./NotificationBell";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface HeaderProps {
   activeTab: string;
@@ -23,6 +37,8 @@ interface HeaderProps {
 export const Header = ({ activeTab, setActiveTab }: HeaderProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { language, setLanguage, t } = useLanguage();
+  const { user, profile, signOut } = useAuth();
+  const navigate = useNavigate();
 
   const navigationItems = [
     { 
@@ -115,16 +131,72 @@ export const Header = ({ activeTab, setActiveTab }: HeaderProps) => {
             })}
           </nav>
 
-          {/* Language Toggle */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setLanguage(language === 'en' ? 'ta' : 'en')}
-            className="hidden lg:flex items-center gap-2"
-          >
-            <Globe className="w-4 h-4" />
-            {language === 'en' ? 'தமிழ்' : 'English'}
-          </Button>
+          {/* Right Side Actions */}
+          <div className="hidden lg:flex items-center space-x-2">
+            {/* Language Toggle */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setLanguage(language === 'en' ? 'ta' : 'en')}
+              className="flex items-center gap-2"
+            >
+              <Globe className="w-4 h-4" />
+              {language === 'en' ? 'தமிழ்' : 'English'}
+            </Button>
+
+            {/* Voice Assistant Button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setActiveTab('voice-assistant')}
+              className="flex items-center gap-2"
+            >
+              <Mic className="w-4 h-4" />
+              <span className="hidden xl:inline">{language === 'ta' ? 'குரல் உதவி' : 'Voice'}</span>
+            </Button>
+
+            {/* User Menu */}
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                    <Avatar className="h-7 w-7">
+                      <AvatarImage src={profile?.profile_photo || undefined} />
+                      <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                        {profile?.full_name?.charAt(0) || 'F'}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="hidden xl:inline max-w-24 truncate">
+                      {profile?.full_name || (language === 'ta' ? 'விவசாயி' : 'Farmer')}
+                    </span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem onClick={() => navigate('/profile')}>
+                    <User className="w-4 h-4 mr-2" />
+                    {language === 'ta' ? 'சுயவிவரம்' : 'Profile'}
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={signOut} className="text-destructive">
+                    <LogOut className="w-4 h-4 mr-2" />
+                    {language === 'ta' ? 'வெளியேறு' : 'Logout'}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button
+                variant="nav"
+                size="sm"
+                onClick={() => navigate('/login')}
+                className="flex items-center gap-2"
+              >
+                <LogIn className="w-4 h-4" />
+                {language === 'ta' ? 'உள்நுழை' : 'Login'}
+              </Button>
+            )}
+
+            <NotificationBell />
+          </div>
 
           {/* Mobile Menu Button */}
           <Button
@@ -158,6 +230,21 @@ export const Header = ({ activeTab, setActiveTab }: HeaderProps) => {
                   </Button>
                 );
               })}
+              
+              {/* Voice Assistant */}
+              <Button
+                variant={activeTab === 'voice-assistant' ? 'nav' : 'ghost'}
+                onClick={() => {
+                  setActiveTab('voice-assistant');
+                  setIsMobileMenuOpen(false);
+                }}
+                className="w-full justify-start"
+              >
+                <Mic className="w-4 h-4 mr-2" />
+                {language === 'ta' ? 'குரல் உதவியாளர்' : 'Voice Assistant'}
+              </Button>
+              
+              {/* Language Toggle */}
               <Button
                 variant="ghost"
                 onClick={() => setLanguage(language === 'en' ? 'ta' : 'en')}
@@ -166,6 +253,46 @@ export const Header = ({ activeTab, setActiveTab }: HeaderProps) => {
                 <Globe className="w-4 h-4 mr-2" />
                 {language === 'en' ? 'தமிழ்' : 'English'}
               </Button>
+              
+              {/* User Actions */}
+              {user ? (
+                <>
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      navigate('/profile');
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="w-full justify-start"
+                  >
+                    <User className="w-4 h-4 mr-2" />
+                    {language === 'ta' ? 'சுயவிவரம்' : 'Profile'}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      signOut();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="w-full justify-start text-destructive"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    {language === 'ta' ? 'வெளியேறு' : 'Logout'}
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  variant="nav"
+                  onClick={() => {
+                    navigate('/login');
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="w-full justify-start"
+                >
+                  <LogIn className="w-4 h-4 mr-2" />
+                  {language === 'ta' ? 'உள்நுழை' : 'Login'}
+                </Button>
+              )}
             </nav>
           </div>
         )}
