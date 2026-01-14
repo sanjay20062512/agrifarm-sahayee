@@ -112,7 +112,7 @@ export const VoiceAssistant = ({ onNavigate }: VoiceAssistantProps) => {
     }
   ]);
   
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const recognitionRef = useRef<InstanceType<typeof window.SpeechRecognition> | null>(null);
   const synthesisRef = useRef<SpeechSynthesisUtterance | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 

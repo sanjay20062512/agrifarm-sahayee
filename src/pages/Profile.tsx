@@ -17,7 +17,7 @@ import {
   LogOut, Save, Loader2, ArrowLeft, Camera,
   Mic, Bell, Globe, Tractor, BookOpen, Bug, FileText
 } from 'lucide-react';
-import { stateDistrictClimateData } from '@/data/stateDistrictClimate';
+import { stateDistrictClimate } from '@/data/stateDistrictClimate';
 
 const cropOptions = [
   'Rice', 'Wheat', 'Cotton', 'Sugarcane', 'Groundnut', 
@@ -75,8 +75,8 @@ export const Profile = () => {
     }
   }, [profile]);
 
-  const states = Object.keys(stateDistrictClimateData);
-  const districts = formData.state ? stateDistrictClimateData[formData.state]?.districts || [] : [];
+  const states = Object.keys(stateDistrictClimate);
+  const districts = formData.state ? Object.keys(stateDistrictClimate[formData.state] || {}) : [];
 
   const toggleCrop = (crop: string) => {
     setFormData(prev => ({
