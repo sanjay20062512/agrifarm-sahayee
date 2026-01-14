@@ -15,7 +15,6 @@ import { EnhancedMachineryRental } from "@/components/enhanced/EnhancedMachinery
 import { Learning } from "@/components/Learning";
 import { OrganicFarming } from "@/components/OrganicFarming";
 import { VoiceAssistant } from "@/components/VoiceAssistant";
-import { LanguageProvider } from "@/components/LanguageContext";
 
 interface FormData {
   state: string;
@@ -189,14 +188,12 @@ const Index = () => {
   });
 
   return (
-    <LanguageProvider>
-      <div className="min-h-screen bg-background">
-        <Header activeTab={activeTab} setActiveTab={setActiveTab} />
-        <main>
-          {renderContent()}
-        </main>
-      </div>
-    </LanguageProvider>
+    <div className="min-h-screen bg-background">
+      <Header activeTab={activeTab} setActiveTab={setActiveTab} />
+      <main>
+        {renderContent()}
+      </main>
+    </div>
   );
 };
 
