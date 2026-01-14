@@ -46,8 +46,8 @@ function validateInput(question: string, context: string | undefined): { valid: 
     return { valid: false, error: 'Question is required and must be a string' };
   }
   
-  if (question.length < 3) {
-    return { valid: false, error: 'Question must be at least 3 characters long' };
+  if (question.length < 2) {
+    return { valid: false, error: 'Question must be at least 2 characters long' };
   }
   
   if (question.length > 2000) {
