@@ -29,17 +29,6 @@ function checkRateLimit(identifier: string): { allowed: boolean; remaining: numb
   return { allowed: true, remaining: RATE_LIMIT - record.count };
 }
 
-function getClientIdentifier(req: Request): string {
-  const forwardedFor = req.headers.get('x-forwarded-for');
-  const authHeader = req.headers.get('authorization');
-  
-  if (authHeader) {
-    return `auth:${authHeader.slice(-20)}`;
-  }
-  
-  return `ip:${forwardedFor?.split(',')[0] || 'unknown'}`;
-}
-
 // Input validation
 function validateInput(question: string, context: string | undefined): { valid: boolean; error?: string } {
   if (!question || typeof question !== 'string') {
@@ -71,9 +60,34 @@ serve(async (req) => {
   }
 
   try {
-    // Rate limiting
-    const clientId = getClientIdentifier(req);
-    const rateLimit = checkRateLimit(clientId);
+    // Authentication check
+    const authHeader = req.headers.get('authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return new Response(JSON.stringify({ error: 'Authentication required to use AI features. Please login.' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    const userClient = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } }
+    });
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: claims, error: claimsError } = await userClient.auth.getClaims(token);
+    if (claimsError || !claims?.claims) {
+      return new Response(JSON.stringify({ error: 'Invalid or expired authentication' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const userId = claims.claims.sub as string;
+
+    // Rate limiting by user ID
+    const rateLimit = checkRateLimit(userId);
     
     if (!rateLimit.allowed) {
       return new Response(JSON.stringify({ 
@@ -174,7 +188,7 @@ Format your response clearly with bullet points or numbered lists when appropria
   } catch (error) {
     console.error('Error in ai-assistance:', error);
     return new Response(JSON.stringify({ 
-      error: error.message || 'An error occurred while processing your request' 
+      error: 'An error occurred while processing your request' 
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
