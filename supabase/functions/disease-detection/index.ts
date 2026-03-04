@@ -1,5 +1,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -8,8 +9,8 @@ const corsHeaders = {
 
 // Simple in-memory rate limiting
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
-const RATE_LIMIT = 5; // requests per minute (stricter for expensive analysis)
-const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
+const RATE_LIMIT = 5;
+const RATE_LIMIT_WINDOW = 60 * 1000;
 
 function checkRateLimit(identifier: string): { allowed: boolean; remaining: number } {
   const now = Date.now();
@@ -28,47 +29,29 @@ function checkRateLimit(identifier: string): { allowed: boolean; remaining: numb
   return { allowed: true, remaining: RATE_LIMIT - record.count };
 }
 
-function getClientIdentifier(req: Request): string {
-  const forwardedFor = req.headers.get('x-forwarded-for');
-  const authHeader = req.headers.get('authorization');
-  
-  if (authHeader) {
-    return `auth:${authHeader.slice(-20)}`;
-  }
-  
-  return `ip:${forwardedFor?.split(',')[0] || 'unknown'}`;
-}
-
 // Input validation
 function validateInput(symptoms: string, cropType: string, imageDescription?: string): { valid: boolean; error?: string } {
   if (!symptoms || typeof symptoms !== 'string') {
     return { valid: false, error: 'Symptoms are required and must be a string' };
   }
-  
   if (symptoms.length < 10) {
     return { valid: false, error: 'Please provide more detailed symptom description (at least 10 characters)' };
   }
-  
   if (symptoms.length > 2000) {
     return { valid: false, error: 'Symptom description must not exceed 2000 characters' };
   }
-  
   if (!cropType || typeof cropType !== 'string') {
     return { valid: false, error: 'Crop type is required and must be a string' };
   }
-  
   if (cropType.length > 100) {
     return { valid: false, error: 'Crop type must not exceed 100 characters' };
   }
-  
   if (imageDescription !== undefined && typeof imageDescription !== 'string') {
     return { valid: false, error: 'Image description must be a string if provided' };
   }
-  
   if (imageDescription && imageDescription.length > 1000) {
     return { valid: false, error: 'Image description must not exceed 1000 characters' };
   }
-  
   return { valid: true };
 }
 
@@ -78,27 +61,47 @@ serve(async (req) => {
   }
 
   try {
-    // Rate limiting
-    const clientId = getClientIdentifier(req);
-    const rateLimit = checkRateLimit(clientId);
+    // Authentication check
+    const authHeader = req.headers.get('authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return new Response(JSON.stringify({ error: 'Authentication required. Please login.' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    const userClient = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } }
+    });
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: claims, error: claimsError } = await userClient.auth.getClaims(token);
+    if (claimsError || !claims?.claims) {
+      return new Response(JSON.stringify({ error: 'Invalid or expired authentication' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const userId = claims.claims.sub as string;
+
+    // Rate limiting by user ID
+    const rateLimit = checkRateLimit(userId);
     
     if (!rateLimit.allowed) {
       return new Response(JSON.stringify({ 
-        error: 'Rate limit exceeded. Disease detection is an intensive operation. Please wait before trying again.',
+        error: 'Rate limit exceeded. Please wait before trying again.',
         retryAfter: 60
       }), {
         status: 429,
-        headers: { 
-          ...corsHeaders, 
-          'Content-Type': 'application/json',
-          'Retry-After': '60'
-        },
+        headers: { ...corsHeaders, 'Content-Type': 'application/json', 'Retry-After': '60' },
       });
     }
 
     const { symptoms, cropType, imageDescription, language = 'english' } = await req.json();
     
-    // Validate inputs
     const validation = validateInput(symptoms, cropType, imageDescription);
     if (!validation.valid) {
       return new Response(JSON.stringify({ error: validation.error }), {
@@ -107,7 +110,6 @@ serve(async (req) => {
       });
     }
 
-    // Validate language
     const validLanguages = ['english', 'hindi', 'tamil', 'malayalam', 'kannada', 'telugu'];
     const selectedLanguage = validLanguages.includes(language?.toLowerCase()) ? language : 'english';
     
@@ -187,7 +189,7 @@ Please provide a detailed diagnosis and treatment plan.`;
   } catch (error) {
     console.error('Error in disease-detection:', error);
     return new Response(JSON.stringify({ 
-      error: error.message || 'An error occurred during disease analysis' 
+      error: 'An error occurred during disease analysis' 
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

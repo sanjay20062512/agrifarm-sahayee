@@ -9,7 +9,7 @@ const corsHeaders = {
 
 // Simple in-memory rate limiting
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
-const RATE_LIMIT = 5; // requests per minute
+const RATE_LIMIT = 5;
 const RATE_LIMIT_WINDOW = 60 * 1000;
 
 function checkRateLimit(identifier: string): { allowed: boolean; remaining: number } {
@@ -29,45 +29,27 @@ function checkRateLimit(identifier: string): { allowed: boolean; remaining: numb
   return { allowed: true, remaining: RATE_LIMIT - record.count };
 }
 
-function getClientIdentifier(req: Request): string {
-  const forwardedFor = req.headers.get('x-forwarded-for');
-  const authHeader = req.headers.get('authorization');
-  
-  if (authHeader) {
-    return `auth:${authHeader.slice(-20)}`;
-  }
-  
-  return `ip:${forwardedFor?.split(',')[0] || 'unknown'}`;
-}
-
 // Input validation
 function validateInput(postId: string, title: string, content: string, category: string): { valid: boolean; error?: string } {
-  // Validate postId format (UUID)
   const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   if (!postId || !uuidRegex.test(postId)) {
     return { valid: false, error: 'Invalid post ID format' };
   }
-  
   if (!title || typeof title !== 'string' || title.length < 3) {
     return { valid: false, error: 'Title must be at least 3 characters' };
   }
-  
   if (title.length > 200) {
     return { valid: false, error: 'Title must not exceed 200 characters' };
   }
-  
   if (!content || typeof content !== 'string' || content.length < 10) {
     return { valid: false, error: 'Content must be at least 10 characters' };
   }
-  
   if (content.length > 5000) {
     return { valid: false, error: 'Content must not exceed 5000 characters' };
   }
-  
   if (!category || typeof category !== 'string') {
     return { valid: false, error: 'Category is required' };
   }
-  
   return { valid: true };
 }
 
@@ -77,9 +59,34 @@ serve(async (req) => {
   }
 
   try {
-    // Rate limiting
-    const clientId = getClientIdentifier(req);
-    const rateLimit = checkRateLimit(clientId);
+    // Authentication check
+    const authHeader = req.headers.get('authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return new Response(JSON.stringify({ error: 'Authentication required. Please login.' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    const userClient = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } }
+    });
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: claims, error: claimsError } = await userClient.auth.getClaims(token);
+    if (claimsError || !claims?.claims) {
+      return new Response(JSON.stringify({ error: 'Invalid or expired authentication' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const userId = claims.claims.sub as string;
+
+    // Rate limiting by user ID
+    const rateLimit = checkRateLimit(userId);
     
     if (!rateLimit.allowed) {
       return new Response(JSON.stringify({ 
@@ -93,7 +100,6 @@ serve(async (req) => {
 
     const { postId, title, content, category } = await req.json();
     
-    // Validate inputs
     const validation = validateInput(postId, title, content, category);
     if (!validation.valid) {
       return new Response(JSON.stringify({ error: validation.error }), {
@@ -107,12 +113,11 @@ serve(async (req) => {
       throw new Error('OpenAI API key not configured');
     }
 
-    // Initialize Supabase client
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    // Initialize Supabase service client for DB operations
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Verify post exists before processing
+    // Verify post exists
     const { data: existingPost, error: fetchError } = await supabase
       .from('forum_posts')
       .select('id')
@@ -126,7 +131,6 @@ serve(async (req) => {
       });
     }
 
-    // Call OpenAI API for analysis
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -172,14 +176,12 @@ serve(async (req) => {
     try {
       parsedResponse = JSON.parse(aiResponse);
     } catch (e) {
-      // Fallback if JSON parsing fails
       parsedResponse = {
         analysis: aiResponse.substring(0, 200),
         suggestions: ["Consider consulting with local agricultural experts", "Check soil conditions and weather patterns", "Implement proper crop rotation practices"]
       };
     }
 
-    // Update the post with AI analysis
     const { error: updateError } = await supabase
       .from('forum_posts')
       .update({
@@ -204,7 +206,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error in analyze-forum-post:', error);
     return new Response(JSON.stringify({ 
-      error: error.message || 'An error occurred during analysis' 
+      error: 'An error occurred during analysis' 
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

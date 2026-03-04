@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 interface Notification {
   id: string;
@@ -21,19 +22,26 @@ interface Notification {
 }
 
 export const NotificationBell = () => {
+  const { user } = useAuth();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
+    if (!user) {
+      setNotifications([]);
+      setUnreadCount(0);
+      return;
+    }
+
     fetchNotifications();
 
-    // Set up real-time subscription
+    // Set up real-time subscription filtered by user
     const channel = supabase
       .channel("notifications_changes")
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "notifications" },
+        { event: "*", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` },
         () => {
           fetchNotifications();
         }
@@ -43,15 +51,16 @@ export const NotificationBell = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [user]);
 
   const fetchNotifications = async () => {
+    if (!user) return;
+    
     try {
-      // In real app, would filter by auth.uid()
-      // For demo, fetching all notifications
       const { data, error } = await supabase
         .from("notifications")
         .select("*")
+        .eq("user_id", user.id)
         .order("created_at", { ascending: false })
         .limit(20);
 
@@ -65,11 +74,14 @@ export const NotificationBell = () => {
   };
 
   const markAsRead = async (notificationId: string) => {
+    if (!user) return;
+    
     try {
       const { error } = await supabase
         .from("notifications")
         .update({ read: true })
-        .eq("id", notificationId);
+        .eq("id", notificationId)
+        .eq("user_id", user.id);
 
       if (error) throw error;
 
@@ -80,11 +92,14 @@ export const NotificationBell = () => {
   };
 
   const markAllAsRead = async () => {
+    if (!user) return;
+    
     try {
       const { error } = await supabase
         .from("notifications")
         .update({ read: true })
-        .eq("read", false);
+        .eq("read", false)
+        .eq("user_id", user.id);
 
       if (error) throw error;
 
@@ -110,6 +125,8 @@ export const NotificationBell = () => {
         return "🔔";
     }
   };
+
+  if (!user) return null;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
