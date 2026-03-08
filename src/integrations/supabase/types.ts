@@ -391,13 +391,6 @@ export type Database = {
             referencedRelation: "labor_profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "labor_bookings_labor_id_fkey"
-            columns: ["labor_id"]
-            isOneToOne: false
-            referencedRelation: "labor_profiles_public"
-            referencedColumns: ["id"]
-          },
         ]
       }
       labor_profiles: {
@@ -1042,13 +1035,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "reviews_labor_id_fkey"
-            columns: ["labor_id"]
-            isOneToOne: false
-            referencedRelation: "labor_profiles_public"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "reviews_machinery_id_fkey"
             columns: ["machinery_id"]
             isOneToOne: false
@@ -1170,147 +1156,57 @@ export type Database = {
       }
     }
     Views: {
-      job_profiles_public: {
-        Row: {
-          availability: boolean | null
-          created_at: string | null
-          description: string | null
-          district: string | null
-          expected_wage_max: number | null
-          expected_wage_min: number | null
-          experience_years: number | null
-          id: string | null
-          location: string | null
-          name: string | null
-          phone: string | null
-          pincode: string | null
-          profile_image: string | null
-          skills: string[] | null
-          specialization: string | null
-          state: string | null
-          updated_at: string | null
-          user_id: string | null
-        }
-        Insert: {
-          availability?: boolean | null
-          created_at?: string | null
-          description?: string | null
-          district?: string | null
-          expected_wage_max?: number | null
-          expected_wage_min?: number | null
-          experience_years?: number | null
-          id?: string | null
-          location?: string | null
-          name?: string | null
-          phone?: string | null
-          pincode?: string | null
-          profile_image?: string | null
-          skills?: string[] | null
-          specialization?: string | null
-          state?: string | null
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          availability?: boolean | null
-          created_at?: string | null
-          description?: string | null
-          district?: string | null
-          expected_wage_max?: number | null
-          expected_wage_min?: number | null
-          experience_years?: number | null
-          id?: string | null
-          location?: string | null
-          name?: string | null
-          phone?: string | null
-          pincode?: string | null
-          profile_image?: string | null
-          skills?: string[] | null
-          specialization?: string | null
-          state?: string | null
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
-      labor_profiles_public: {
-        Row: {
-          availability:
-            | Database["public"]["Enums"]["availability_status"]
-            | null
-          created_at: string | null
-          daily_wage_max: number | null
-          daily_wage_min: number | null
-          description: string | null
-          district: string | null
-          experience_years: number | null
-          id: string | null
-          location: string | null
-          name: string | null
-          phone: string | null
-          pincode: string | null
-          profile_image: string | null
-          rating: number | null
-          skills: Database["public"]["Enums"]["skill_type"][] | null
-          state: string | null
-          total_reviews: number | null
-          updated_at: string | null
-          user_id: string | null
-          verified: boolean | null
-        }
-        Insert: {
-          availability?:
-            | Database["public"]["Enums"]["availability_status"]
-            | null
-          created_at?: string | null
-          daily_wage_max?: number | null
-          daily_wage_min?: number | null
-          description?: string | null
-          district?: string | null
-          experience_years?: number | null
-          id?: string | null
-          location?: string | null
-          name?: string | null
-          phone?: string | null
-          pincode?: string | null
-          profile_image?: string | null
-          rating?: number | null
-          skills?: Database["public"]["Enums"]["skill_type"][] | null
-          state?: string | null
-          total_reviews?: number | null
-          updated_at?: string | null
-          user_id?: string | null
-          verified?: boolean | null
-        }
-        Update: {
-          availability?:
-            | Database["public"]["Enums"]["availability_status"]
-            | null
-          created_at?: string | null
-          daily_wage_max?: number | null
-          daily_wage_min?: number | null
-          description?: string | null
-          district?: string | null
-          experience_years?: number | null
-          id?: string | null
-          location?: string | null
-          name?: string | null
-          phone?: string | null
-          pincode?: string | null
-          profile_image?: string | null
-          rating?: number | null
-          skills?: Database["public"]["Enums"]["skill_type"][] | null
-          state?: string | null
-          total_reviews?: number | null
-          updated_at?: string | null
-          user_id?: string | null
-          verified?: boolean | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      list_job_profiles: {
+        Args: { p_district?: string; p_state?: string }
+        Returns: {
+          availability: boolean
+          created_at: string
+          description: string
+          district: string
+          expected_wage_max: number
+          expected_wage_min: number
+          experience_years: number
+          id: string
+          location: string
+          name: string
+          phone: string
+          pincode: string
+          profile_image: string
+          skills: string[]
+          specialization: string
+          state: string
+          updated_at: string
+          user_id: string
+        }[]
+      }
+      list_labor_profiles: {
+        Args: { p_district?: string; p_state?: string }
+        Returns: {
+          availability: Database["public"]["Enums"]["availability_status"]
+          created_at: string
+          daily_wage_max: number
+          daily_wage_min: number
+          description: string
+          district: string
+          experience_years: number
+          id: string
+          location: string
+          name: string
+          phone: string
+          pincode: string
+          profile_image: string
+          rating: number
+          skills: Database["public"]["Enums"]["skill_type"][]
+          state: string
+          total_reviews: number
+          updated_at: string
+          user_id: string
+          verified: boolean
+        }[]
+      }
     }
     Enums: {
       availability_status: "available" | "busy" | "inactive"
