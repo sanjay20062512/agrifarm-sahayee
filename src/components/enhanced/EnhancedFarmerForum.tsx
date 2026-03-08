@@ -143,7 +143,7 @@ export const EnhancedFarmerForum = () => {
 
       const { data, error } = await supabase
         .from('forum_posts')
-        .insert(insertData)
+        .insert(insertData as any)
         .select()
         .single();
 
