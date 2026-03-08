@@ -34,6 +34,8 @@ export const EnhancedFarmerForum = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
+  const { user } = useAuth();
+  const isGuest = !user;
 
   const [newPost, setNewPost] = useState({
     title: "",
