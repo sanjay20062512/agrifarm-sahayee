@@ -127,13 +127,23 @@ export const EnhancedFarmerForum = () => {
     }
 
     try {
+      const insertData: Record<string, unknown> = {
+        ...newPost,
+        is_guest_post: isGuest,
+      };
+
+      if (isGuest) {
+        insertData.guest_session_id = localStorage.getItem('guest_session_id') || Math.random().toString(36).substring(7);
+        if (!localStorage.getItem('guest_session_id')) {
+          localStorage.setItem('guest_session_id', insertData.guest_session_id as string);
+        }
+      } else {
+        insertData.author_id = user!.id;
+      }
+
       const { data, error } = await supabase
         .from('forum_posts')
-        .insert({
-          ...newPost,
-          is_guest_post: true,
-          guest_session_id: Math.random().toString(36).substring(7)
-        })
+        .insert(insertData)
         .select()
         .single();
 
