@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { MessageSquare, ThumbsUp, Send, Filter, TrendingUp, Users, Award, Search, Plus, Clock, MapPin, Tag } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 
 interface ForumPost {
   id: string;
@@ -33,6 +34,8 @@ export const EnhancedFarmerForum = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
+  const { user } = useAuth();
+  const isGuest = !user;
 
   const [newPost, setNewPost] = useState({
     title: "",
@@ -124,13 +127,23 @@ export const EnhancedFarmerForum = () => {
     }
 
     try {
+      const insertData: Record<string, unknown> = {
+        ...newPost,
+        is_guest_post: isGuest,
+      };
+
+      if (isGuest) {
+        insertData.guest_session_id = localStorage.getItem('guest_session_id') || Math.random().toString(36).substring(7);
+        if (!localStorage.getItem('guest_session_id')) {
+          localStorage.setItem('guest_session_id', insertData.guest_session_id as string);
+        }
+      } else {
+        insertData.author_id = user!.id;
+      }
+
       const { data, error } = await supabase
         .from('forum_posts')
-        .insert({
-          ...newPost,
-          is_guest_post: true,
-          guest_session_id: Math.random().toString(36).substring(7)
-        })
+        .insert(insertData as any)
         .select()
         .single();
 

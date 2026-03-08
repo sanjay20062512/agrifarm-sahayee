@@ -1159,7 +1159,54 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      list_job_profiles: {
+        Args: { p_district?: string; p_state?: string }
+        Returns: {
+          availability: boolean
+          created_at: string
+          description: string
+          district: string
+          expected_wage_max: number
+          expected_wage_min: number
+          experience_years: number
+          id: string
+          location: string
+          name: string
+          phone: string
+          pincode: string
+          profile_image: string
+          skills: string[]
+          specialization: string
+          state: string
+          updated_at: string
+          user_id: string
+        }[]
+      }
+      list_labor_profiles: {
+        Args: { p_district?: string; p_state?: string }
+        Returns: {
+          availability: Database["public"]["Enums"]["availability_status"]
+          created_at: string
+          daily_wage_max: number
+          daily_wage_min: number
+          description: string
+          district: string
+          experience_years: number
+          id: string
+          location: string
+          name: string
+          phone: string
+          pincode: string
+          profile_image: string
+          rating: number
+          skills: Database["public"]["Enums"]["skill_type"][]
+          state: string
+          total_reviews: number
+          updated_at: string
+          user_id: string
+          verified: boolean
+        }[]
+      }
     }
     Enums: {
       availability_status: "available" | "busy" | "inactive"
