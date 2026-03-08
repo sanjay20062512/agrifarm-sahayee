@@ -1207,6 +1207,10 @@ export type Database = {
           verified: boolean
         }[]
       }
+      update_wallet_balance: {
+        Args: { p_amount: number; p_operation: string; p_user_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       availability_status: "available" | "busy" | "inactive"
