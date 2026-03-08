@@ -191,13 +191,12 @@ export const EnhancedLaborHiring = () => {
   const fetchLaborers = async () => {
     try {
       const { data, error } = await supabase
-        .from('labor_profiles')
-        .select('*')
-        .eq('availability', 'available')
-        .order('rating', { ascending: false });
+        .rpc('list_labor_profiles');
 
       if (error) throw error;
-      setLaborers(data || []);
+      const available = (data || []).filter((p: any) => p.availability === 'available');
+      available.sort((a: any, b: any) => (b.rating || 0) - (a.rating || 0));
+      setLaborers(available);
     } catch (error) {
       console.error('Error fetching laborers:', error);
     } finally {
@@ -208,13 +207,12 @@ export const EnhancedLaborHiring = () => {
   const fetchJobProfiles = async () => {
     try {
       const { data, error } = await supabase
-        .from('job_profiles')
-        .select('*')
-        .eq('availability', true)
-        .order('created_at', { ascending: false });
+        .rpc('list_job_profiles');
 
       if (error) throw error;
-      setJobProfiles(data || []);
+      const available = (data || []).filter((p: any) => p.availability === true);
+      available.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      setJobProfiles(available);
     } catch (error) {
       console.error('Error fetching job profiles:', error);
     } finally {

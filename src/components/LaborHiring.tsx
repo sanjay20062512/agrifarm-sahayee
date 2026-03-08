@@ -68,13 +68,14 @@ export const LaborHiring = () => {
   const fetchLaborers = async () => {
     try {
       const { data, error } = await supabase
-        .from('labor_profiles')
-        .select('*')
-        .eq('availability', 'available')
-        .order('rating', { ascending: false });
+        .rpc('list_labor_profiles');
 
       if (error) throw error;
-      setLaborers(data || []);
+      // Filter available locally since RPC doesn't filter by availability
+      const available = (data || []).filter((p: any) => p.availability === 'available');
+      // Sort by rating descending
+      available.sort((a: any, b: any) => (b.rating || 0) - (a.rating || 0));
+      setLaborers(available);
     } catch (error) {
       console.error('Error fetching laborers:', error);
     } finally {
