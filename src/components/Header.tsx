@@ -17,6 +17,7 @@ import {
   LogOut,
   Mic
 } from "lucide-react";
+import { Calculator } from "lucide-react";
 import { useLanguage } from "./LanguageContext";
 import { useAuth } from "@/hooks/useAuth";
 import { NotificationBell } from "./NotificationBell";
@@ -94,6 +95,12 @@ export const Header = ({ activeTab, setActiveTab }: HeaderProps) => {
       label: t("nav.machinery-rental"), 
       icon: Tractor,
       variant: "crop" as const
+    },
+    {
+      id: "profit-predictor",
+      label: language === "ta" ? "லாப கணிப்பு" : "Profit Calculator",
+      icon: Calculator,
+      variant: "earth" as const,
     }
   ];
 
