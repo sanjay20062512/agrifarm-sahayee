@@ -15,6 +15,7 @@ import { EnhancedMachineryRental } from "@/components/enhanced/EnhancedMachinery
 import { Learning } from "@/components/Learning";
 import { OrganicFarming } from "@/components/OrganicFarming";
 import { VoiceAssistant } from "@/components/VoiceAssistant";
+import { ProfitPredictor } from "@/components/ProfitPredictor";
 
 interface FormData {
   state: string;
@@ -160,6 +161,12 @@ const Index = () => {
         return (
           <div className="container mx-auto px-4 py-8">
             <VoiceAssistant onNavigate={setActiveTab} />
+          </div>
+        );
+      case "profit-predictor":
+        return (
+          <div className="container mx-auto px-4 py-8">
+            <ProfitPredictor />
           </div>
         );
       default:
